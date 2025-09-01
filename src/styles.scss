@@ -1,1 +1,16 @@
-/* You can add global styles to this file, and also import other style files */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+/* Material baseline improvements */
+html, body { height: 100%; }
+body { margin: 0; font-family: Inter, Roboto, "Helvetica Neue", Arial, sans-serif; background: #fafafa; color: #0f172a; }
+
+
+/* Helpers */
+.container { @apply mx-auto px-4 sm:px-6 lg:px-8; }
+.section { @apply py-12 sm:py-16; }
+.section-title { @apply text-2xl sm:text-3xl font-semibold tracking-tight; }
+.section-sub { @apply text-slate-600 mt-2; }
+.card { @apply bg-white rounded-2xl shadow-soft border border-slate-100; }

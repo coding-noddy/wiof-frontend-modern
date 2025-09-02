@@ -48,11 +48,11 @@ import { RouterLink } from '@angular/router';
         </div>
       </div>
       <div class="border-t border-slate-200">
-        <div class="container py-4 text-sm text-slate-600">
-          © {{ 2025 }} World is One Family
-        </div>
+        <div class="container py-4 text-sm text-slate-600">© {{ year }} World is One Family</div>
       </div>
     </footer>
   `,
 })
-export class FooterComponent {}
+export class FooterComponent {
+  year = new Date().getFullYear();
+}

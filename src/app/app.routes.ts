@@ -12,7 +12,7 @@ export const routes: Routes = [
   },
   // app.routes.ts
   {
-    path: 'elements',
+    path: 'element',
     loadChildren: () => import('./features/elements/elements.routes').then((m) => m.ELEMENT_ROUTES),
   },
   {

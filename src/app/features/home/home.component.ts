@@ -27,7 +27,7 @@ import { ElementBadgeComponent } from '../../shared/ui/element-badge.component';
             share for a thriving planet.
           </p>
           <div class="mt-6 flex gap-3">
-            <a routerLink="/elements" class="px-5 py-3 rounded-xl bg-water text-white shadow-soft"
+            <a routerLink="/element" class="px-5 py-3 rounded-xl bg-water text-white shadow-soft"
               >Explore the Elements</a
             >
             <a routerLink="/videos" class="px-5 py-3 rounded-xl border border-slate-300"
@@ -54,7 +54,7 @@ import { ElementBadgeComponent } from '../../shared/ui/element-badge.component';
             <h2 class="section-title">Explore the Five Elements</h2>
             <p class="section-sub">Learn, practice and share by element.</p>
           </div>
-          <a routerLink="/elements" class="text-water">View all</a>
+          <a routerLink="/element" class="text-water">View all</a>
         </div>
         <div class="grid sm:grid-cols-2 lg:grid-cols-5 gap-4">
           <app-element-card

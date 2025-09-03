@@ -2,6 +2,7 @@
 import { Routes } from '@angular/router';
 
 export const ELEMENT_ROUTES: Routes = [
+  { path: '', pathMatch: 'full', redirectTo: 'earth' },
   {
     path: ':element',
     loadComponent: () => import('./element-shell.component').then((m) => m.ElementShellComponent),

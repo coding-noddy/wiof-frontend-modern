@@ -15,7 +15,7 @@ import { RouterLink } from '@angular/router';
           <span>World is One Family</span>
         </a>
         <nav class="hidden md:flex items-center gap-6 text-sm">
-          <a routerLink="/elements" class="hover:text-water">Elements</a>
+          <a routerLink="/element" class="hover:text-water">Elements</a>
           <a routerLink="/videos" class="hover:text-water">Videos</a>
           <a routerLink="/blog" class="hover:text-water">Blog</a>
           <a routerLink="/about" class="hover:text-water">About</a>

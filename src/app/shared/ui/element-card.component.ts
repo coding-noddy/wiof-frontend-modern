@@ -8,8 +8,7 @@ import { RouterLink } from '@angular/router';
   imports: [RouterLink, NgStyle],
   template: `
     <a
-      [routerLink]="['/elements']"
-      [queryParams]="{ t: tag }"
+      [routerLink]="['/element', tag]"
       class="card p-6 flex flex-col gap-3 hover:shadow-lg transition"
     >
       <div class="w-12 h-12 rounded-2xl" [ngStyle]="{ background: gradient }"></div>

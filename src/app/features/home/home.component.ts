@@ -100,7 +100,7 @@ import { ElementBadgeComponent } from '../../shared/ui/element-badge.component';
               actions.
             </p>
           </div>
-          <a routerLink="/in-focus" class="px-5 py-3 rounded-xl bg-water text-white"
+          <a routerLink="/focus/water" class="px-5 py-3 rounded-xl bg-water text-white"
             >Join the Campaign</a
           >
         </div>

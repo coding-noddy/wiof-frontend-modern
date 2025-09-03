@@ -23,13 +23,16 @@ import { RouterLink } from '@angular/router';
             <li><a routerLink="/element">Elements</a></li>
             <li><a routerLink="/videos">Videos</a></li>
             <li><a routerLink="/blog">Blog</a></li>
+            <li><a routerLink="/quiz">Quiz</a></li>
+            <li><a routerLink="/calendar">Calendar</a></li>
             <li><a routerLink="/about">About</a></li>
           </ul>
         </div>
         <div>
           <h4 class="font-semibold mb-3">Get Involved</h4>
           <ul class="space-y-2 text-slate-700">
-            <li><a routerLink="/get-involved">Volunteer</a></li>
+            <li><a routerLink="/take-action">Take Action</a></li>
+            <li><a routerLink="/donate">Donate</a></li>
             <li><a routerLink="/contact">Contact</a></li>
             <li><a routerLink="/privacy-policy">Privacy</a></li>
           </ul>

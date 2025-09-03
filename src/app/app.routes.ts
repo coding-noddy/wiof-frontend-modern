@@ -24,5 +24,37 @@ export const routes: Routes = [
     path: 'blog',
     loadComponent: () => import('./features/blog/blog.component').then((m) => m.BlogComponent),
   },
+  {
+    path: 'quiz',
+    loadComponent: () => import('./features/quiz/quiz.component').then((m) => m.QuizComponent),
+  },
+  {
+    path: 'quiz/archive',
+    loadComponent: () =>
+      import('./features/quiz/quiz-archive.component').then((m) => m.QuizArchiveComponent),
+  },
+  {
+    path: 'calendar',
+    loadComponent: () =>
+      import('./features/calendar/calendar.component').then((m) => m.CalendarComponent),
+  },
+  {
+    path: 'focus/:type',
+    loadComponent: () => import('./features/focus/focus.component').then((m) => m.FocusComponent),
+  },
+  {
+    path: 'take-action',
+    loadComponent: () =>
+      import('./features/take-action/take-action.component').then((m) => m.TakeActionComponent),
+  },
+  {
+    path: 'contact',
+    loadComponent: () =>
+      import('./features/contact/contact.component').then((m) => m.ContactComponent),
+  },
+  {
+    path: 'donate',
+    loadComponent: () => import('./features/donate/donate.component').then((m) => m.DonateComponent),
+  },
   { path: '**', redirectTo: '' },
 ];

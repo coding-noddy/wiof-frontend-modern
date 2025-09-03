@@ -18,13 +18,16 @@ import { RouterLink } from '@angular/router';
           <a routerLink="/element" class="hover:text-water">Elements</a>
           <a routerLink="/videos" class="hover:text-water">Videos</a>
           <a routerLink="/blog" class="hover:text-water">Blog</a>
+          <a routerLink="/quiz" class="hover:text-water">Quiz</a>
+          <a routerLink="/calendar" class="hover:text-water">Calendar</a>
           <a routerLink="/about" class="hover:text-water">About</a>
+          <a routerLink="/donate" class="hover:text-water">Donate</a>
         </nav>
         <a
-          routerLink="/get-involved"
+          routerLink="/take-action"
           class="ml-4 inline-flex items-center px-4 py-2 rounded-full bg-water text-white text-sm shadow-soft hover:opacity-90"
         >
-          Get Involved
+          Take Action
         </a>
       </div>
     </header>

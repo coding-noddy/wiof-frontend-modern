@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+﻿import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-about',
@@ -10,7 +10,7 @@ import { Component } from '@angular/core';
         <p class="section-sub mb-8">Learn more about the World is One Family initiative.</p>
         <p>
           World is One Family is a collective movement dedicated to living in harmony with the five
-          elements—earth, water, fire, air and space. We share stories, tools and actions to inspire
+          elements — earth, water, fire, air and space. We share stories, tools and actions to inspire
           sustainable living.
         </p>
         <p>

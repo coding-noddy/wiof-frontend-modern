@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+﻿import { Component } from '@angular/core';
 import { NgFor } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { ElementCardComponent } from '../../shared/ui/element-card.component';
@@ -183,3 +183,4 @@ export class HomeComponent {
     },
   ];
 }
+

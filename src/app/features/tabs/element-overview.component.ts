@@ -1,7 +1,6 @@
 import { Component, computed, inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { NgClass, NgFor } from '@angular/common';
-import { ElementBadgeComponent } from '../../shared/ui/element-badge.component';
 
 @Component({
   standalone: true,
@@ -69,7 +68,7 @@ export class ElementOverviewComponent {
   
   elementDescription() {
     const descriptions = {
-      earth: 'Explore sustainable practices for our planet\'s soil, forests, and biodiversity.',
+      earth: "Explore sustainable practices for our planet's soil, forests, and biodiversity.",
       water: 'Discover solutions for clean water access, conservation, and marine protection.',
       fire: 'Learn about renewable energy, climate action, and sustainable power solutions.',
       air: 'Understand air quality, atmospheric health, and pollution reduction strategies.',
@@ -89,10 +88,11 @@ export class ElementOverviewComponent {
   
   focusAreas() {
     return [
-      { icon: '🌱', title: 'Conservation', description: 'Protecting natural resources' },
+      { icon: '🌿', title: 'Conservation', description: 'Protecting natural resources' },
       { icon: '♻️', title: 'Sustainability', description: 'Circular economy practices' },
-      { icon: '🏭', title: 'Innovation', description: 'Green technology solutions' },
-      { icon: '👥', title: 'Community', description: 'Collective action initiatives' }
+      { icon: '💡', title: 'Innovation', description: 'Green technology solutions' },
+      { icon: '🤝', title: 'Community', description: 'Collective action initiatives' }
     ];
   }
 }
+

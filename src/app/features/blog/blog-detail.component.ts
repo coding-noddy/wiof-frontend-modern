@@ -1,4 +1,4 @@
-import { Component, computed, inject } from '@angular/core';
+﻿import { Component, computed, inject } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { NgIf, NgFor } from '@angular/common';
 import { ElementBadgeComponent } from '../../shared/ui/element-badge.component';

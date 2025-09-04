@@ -1,20 +1,29 @@
 import { Component } from '@angular/core';
-import { NgFor, NgIf } from '@angular/common';
+import { NgFor } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { ElementCardComponent } from '../../shared/ui/element-card.component';
 import { VideoCardComponent, VideoCardModel } from '../../shared/ui/video-card.component';
 import { ElementBadgeComponent } from '../../shared/ui/element-badge.component';
+import { BreakingNewsComponent } from '../../shared/ui/breaking-news.component';
+import { WeeklyQuizTeaserComponent } from '../../shared/ui/weekly-quiz-teaser.component';
+import { EnvironmentCalendarTeaserComponent } from '../../shared/ui/environment-calendar-teaser.component';
+import { InFocusComponent } from '../../shared/ui/in-focus.component';
+import { WidgetTeaserComponent } from '../../shared/ui/widget-teaser.component';
 
 @Component({
   selector: 'app-home',
   standalone: true,
   imports: [
     NgFor,
-    NgIf,
     RouterLink,
     ElementCardComponent,
-    VideoCardComponent
-],
+    VideoCardComponent,
+    BreakingNewsComponent,
+    WeeklyQuizTeaserComponent,
+    EnvironmentCalendarTeaserComponent,
+    InFocusComponent,
+    WidgetTeaserComponent
+  ],
   template: `
     <!-- Hero -->
     <section class="section pt-12">
@@ -46,6 +55,9 @@ import { ElementBadgeComponent } from '../../shared/ui/element-badge.component';
       </div>
     </section>
 
+    <!-- Breaking News -->
+    <app-breaking-news />
+
     <!-- Elements grid -->
     <section class="section">
       <div class="container">
@@ -66,6 +78,12 @@ import { ElementBadgeComponent } from '../../shared/ui/element-badge.component';
         </div>
       </div>
     </section>
+
+    <!-- Weekly Quiz Teaser -->
+    <app-weekly-quiz-teaser />
+
+    <!-- Environment Calendar Teaser -->
+    <app-environment-calendar-teaser />
 
     <!-- Featured videos -->
     <section class="section">
@@ -88,6 +106,12 @@ import { ElementBadgeComponent } from '../../shared/ui/element-badge.component';
         </div>
       </div>
     </section>
+
+    <!-- In Focus -->
+    <app-in-focus />
+
+    <!-- Interactive Widgets -->
+    <app-widget-teaser />
 
     <!-- In Focus / Campaign CTA -->
     <section class="section">

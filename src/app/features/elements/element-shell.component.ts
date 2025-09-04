@@ -12,13 +12,16 @@ import { NgClass, NgIf } from '@angular/common';
     <div class="container">
       <p class="text-sm font-semibold" [ngClass]="colorClass()">Element</p>
       <h1 class="section-title">{{ name() }}</h1>
-      <p class="section-sub">Explore {{ name() }}: Blogs, Coffee Conversations, Videos{{ hasTools() ? ', Tools' : '' }}.</p>
+      <p class="section-sub">Explore {{ name() }}: Overview, Widgets, Focus Stories, Community Voices, Blogs, Videos, and Take Action.</p>
 
       <nav class="mt-6 flex flex-wrap gap-2 text-sm">
-        <a [routerLink]="['./','blog']"   routerLinkActive="bg-slate-900 text-white" class="px-3 py-2 rounded-xl border">Blogs</a>
-        <a [routerLink]="['./','coffee']" routerLinkActive="bg-slate-900 text-white" class="px-3 py-2 rounded-xl border">Coffee Conversations</a>
+        <a [routerLink]="['./','overview']" routerLinkActive="bg-slate-900 text-white" class="px-3 py-2 rounded-xl border">Overview</a>
+        <a [routerLink]="['./','widgets']" routerLinkActive="bg-slate-900 text-white" class="px-3 py-2 rounded-xl border">Widgets</a>
+        <a [routerLink]="['./','in-focus']" routerLinkActive="bg-slate-900 text-white" class="px-3 py-2 rounded-xl border">In Focus</a>
+        <a [routerLink]="['./','voices']" routerLinkActive="bg-slate-900 text-white" class="px-3 py-2 rounded-xl border">Voices</a>
+        <a [routerLink]="['./','blog']" routerLinkActive="bg-slate-900 text-white" class="px-3 py-2 rounded-xl border">Blogs</a>
         <a [routerLink]="['./','videos']" routerLinkActive="bg-slate-900 text-white" class="px-3 py-2 rounded-xl border">Videos</a>
-        <a @If hasTools() [routerLink]="['./','tools']" routerLinkActive="bg-slate-900 text-white" class="px-3 py-2 rounded-xl border">Tools</a>
+        <a [routerLink]="['./','take-action']" routerLinkActive="bg-slate-900 text-white" class="px-3 py-2 rounded-xl border">Take Action</a>
       </nav>
 
       <div class="mt-8">

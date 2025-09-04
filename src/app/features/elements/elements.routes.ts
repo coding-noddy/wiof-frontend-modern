@@ -7,15 +7,35 @@ export const ELEMENT_ROUTES: Routes = [
     path: ':element',
     loadComponent: () => import('./element-shell.component').then((m) => m.ElementShellComponent),
     children: [
-      { path: '', pathMatch: 'full', redirectTo: 'blog' },
+      { path: '', pathMatch: 'full', redirectTo: 'overview' },
+      {
+        path: 'overview',
+        loadComponent: () => import('../tabs/element-overview.component').then(m => m.ElementOverviewComponent)
+      },
+      {
+        path: 'widgets', 
+        loadComponent: () => import('../tabs/element-widgets.component').then(m => m.ElementWidgetsComponent)
+      },
+      {
+        path: 'in-focus',
+        loadComponent: () => import('../tabs/element-in-focus.component').then(m => m.ElementInFocusComponent)
+      },
+      {
+        path: 'voices',
+        loadComponent: () => import('../tabs/element-voices.component').then(m => m.ElementVoicesComponent)
+      },
       {
         path: 'blog',
-        loadComponent: () =>
-          import('../tabs/element-blog.component').then((m) => m.ElementBlogComponent),
+        loadComponent: () => import('../tabs/element-blog.component').then(m => m.ElementBlogComponent)
       },
-      //   { path: 'coffee', loadComponent: () => import('./tabs/element-coffee.component').then(m => m.ElementCoffeeComponent) },
-      //   { path: 'videos', loadComponent: () => import('./tabs/element-videos.component').then(m => m.ElementVideosComponent) },
-      //   { path: 'tools',  loadComponent: () => import('./tabs/element-tools.component').then(m => m.ElementToolsComponent) },
+      {
+        path: 'videos',
+        loadComponent: () => import('../tabs/element-videos.component').then(m => m.ElementVideosComponent)
+      },
+      {
+        path: 'take-action',
+        loadComponent: () => import('../tabs/element-take-action.component').then(m => m.ElementTakeActionComponent)
+      }
     ],
   },
 ];

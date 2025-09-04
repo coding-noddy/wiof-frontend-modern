@@ -10,7 +10,7 @@ export class AppTitleStrategy extends TitleStrategy {
   override updateTitle(snapshot: RouterStateSnapshot): void {
     const built = this.buildTitle(snapshot);
     const suffix = 'World is One Family';
-    this.title.setTitle(built ? `${built} â€¢ ${suffix}` : suffix);
+    this.title.setTitle(built ? `${built} • ${suffix}` : suffix);
 
     // Set description from route data if provided
     const tree = snapshot.root;

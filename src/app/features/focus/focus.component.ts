@@ -150,7 +150,7 @@ import { FocusItem, FocusFilter } from '../../shared/models/focus.model';
                        [href]="item.website" 
                        target="_blank"
                        class="text-water hover:text-water/80">
-                      Visit →
+                      Visit
                     </a>
                   </div>
                 </div>
@@ -459,3 +459,4 @@ export class FocusComponent {
     this.currentPage.set(page);
   }
 }
+

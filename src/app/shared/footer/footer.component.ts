@@ -10,9 +10,7 @@ import { RouterLink } from '@angular/router';
       <div class="container py-10 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
         <div>
           <div class="flex items-center gap-2 font-semibold">
-            <span
-              class="inline-block w-8 h-8 rounded-full bg-gradient-to-tr from-water to-space"
-            ></span>
+            <span class="inline-block w-8 h-8 rounded-full bg-gradient-to-tr from-water to-space"></span>
             <span>World is One Family</span>
           </div>
           <p class="text-slate-600 mt-3">Vasudhaiva Kutumbakam — The world is one family.</p>
@@ -59,3 +57,4 @@ import { RouterLink } from '@angular/router';
 export class FooterComponent {
   year = new Date().getFullYear();
 }
+

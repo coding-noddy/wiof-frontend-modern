@@ -76,6 +76,7 @@ export interface FocusStory {
                   [src]="courseInFocus.imageUrl"
                   [alt]="courseInFocus.title"
                   class="w-full h-full object-cover hover:scale-105 transition duration-300"
+                  loading="lazy"
                 />
               </div>
               <div class="p-4">
@@ -184,4 +185,28 @@ export class InFocusComponent {
     duration: '15 hours',
     url: 'https://www.coursera.org/learn/sustainability',
   };
+
+  // Course JSON-LD (basic)
+  // This would ideally live on a course detail page; including here for mock completeness
+  constructor() {
+    try {
+      const data = {
+        '@context': 'https://schema.org',
+        '@type': 'Course',
+        name: this.courseInFocus.title,
+        description: this.courseInFocus.description,
+        provider: {
+          '@type': 'Organization',
+          name: this.courseInFocus.provider,
+          sameAs: this.courseInFocus.url
+        }
+      };
+      // Defer DOM access; optional no-op if not available
+      const s = document.createElement('script');
+      s.type = 'application/ld+json';
+      s.id = 'ld-course';
+      s.textContent = JSON.stringify(data);
+      document.head.appendChild(s);
+    } catch {}
+  }
 }

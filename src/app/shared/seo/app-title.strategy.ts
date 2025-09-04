@@ -1,4 +1,4 @@
-import { Injectable, inject } from '@angular/core';
+﻿import { Injectable, inject } from '@angular/core';
 import { Meta, Title } from '@angular/platform-browser';
 import { RouterStateSnapshot, TitleStrategy } from '@angular/router';
 
@@ -10,7 +10,7 @@ export class AppTitleStrategy extends TitleStrategy {
   override updateTitle(snapshot: RouterStateSnapshot): void {
     const built = this.buildTitle(snapshot);
     const suffix = 'World is One Family';
-    this.title.setTitle(built ? `${built} • ${suffix}` : suffix);
+    this.title.setTitle(built ? `${built} â€¢ ${suffix}` : suffix);
 
     // Set description from route data if provided
     const tree = snapshot.root;

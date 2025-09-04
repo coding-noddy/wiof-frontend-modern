@@ -1,14 +1,14 @@
 ﻿import { Component, computed, inject, signal } from '@angular/core';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { NgFor, NgIf, NgClass, TitleCasePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ElementBadgeComponent } from '../../shared/ui/element-badge.component';
-import { FocusItem, FocusFilter } from '../../shared/models/focus.model';
+import { FocusItem } from '../../shared/models/focus.model';
 
 @Component({
   selector: 'app-focus',
   standalone: true,
-  imports: [NgFor, NgIf, NgClass, RouterLink, FormsModule, ElementBadgeComponent, TitleCasePipe],
+  imports: [NgFor, NgIf, NgClass, FormsModule, ElementBadgeComponent, TitleCasePipe],
   template: `
     <section class="section">
       <div class="container">

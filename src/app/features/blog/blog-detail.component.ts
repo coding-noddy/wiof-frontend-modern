@@ -1,17 +1,26 @@
-import { Component, OnInit, computed, inject } from '@angular/core';
+import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { NgIf, NgFor } from '@angular/common';
 import { ElementBadgeComponent } from '../../shared/ui/element-badge.component';
 import { BlogPost } from '../../shared/models/blog.model';
 import { Meta, Title } from '@angular/platform-browser';
 import { JsonLdService } from '../../shared/seo/json-ld.service';
+import { BLOG_SERVICE } from '../../core/services/tokens';
+import { IBlogService } from '../../core/services/interfaces/blog.service.interface';
 
 @Component({
   selector: 'app-blog-detail',
   standalone: true,
   imports: [NgIf, NgFor, RouterLink, ElementBadgeComponent],
   template: `
-    <article *ngIf="article()" class="section">
+    <!-- Loading state -->
+    <div *ngIf="loading()" class="section">
+      <div class="container max-w-4xl text-center py-12">
+        <div class="text-slate-600">Loading article...</div>
+      </div>
+    </div>
+
+    <article *ngIf="hasArticle()" class="section">
       <div class="container max-w-4xl">
         <!-- Hero Image -->
         <div class="aspect-video bg-slate-200 rounded-2xl overflow-hidden mb-8">
@@ -122,97 +131,62 @@ import { JsonLdService } from '../../shared/seo/json-ld.service';
   `
 })
 export class BlogDetailComponent implements OnInit {
-  route = inject(ActivatedRoute);
-  meta = inject(Meta);
-  title = inject(Title);
-  jsonld = inject(JsonLdService);
+  private blogService = inject(BLOG_SERVICE);
+  private route = inject(ActivatedRoute);
+  private meta = inject(Meta);
+  private title = inject(Title);
+  private jsonld = inject(JsonLdService);
+  
+  loading = signal(true);
+  article = signal<BlogPost | null>(null);
+  relatedArticles = signal<BlogPost[]>([]);
   
   slug = computed(() => this.route.snapshot.paramMap.get('slug') || '');
   
-  article = computed(() => {
-    const slug = this.slug();
-    return this.mockArticles.find(article => article.slug === slug);
-  });
-
-  relatedArticles = computed(() => {
-    const current = this.article();
-    if (!current) return [] as BlogPost[];
-    
-    return this.mockArticles
-      .filter(article => 
-        article.slug !== current.slug && 
-        (article.element === current.element || 
-         article.tags.some(tag => current.tags.includes(tag)))
-      )
-      .slice(0, 2);
-  });
-
   ngOnInit(): void {
-    const a = this.article();
-    if (!a) return;
-    const site = 'World is One Family';
-    this.title.setTitle(`${a.title} • ${site}`);
-    const desc = a.excerpt;
-    const image = a.heroUrl;
-    this.meta.updateTag({ name: 'description', content: desc });
-    this.meta.updateTag({ property: 'og:title', content: a.title });
-    this.meta.updateTag({ property: 'og:description', content: desc });
-    this.meta.updateTag({ property: 'og:type', content: 'article' });
-    this.meta.updateTag({ property: 'og:image', content: image });
-    this.meta.updateTag({ name: 'twitter:card', content: 'summary_large_image' });
-    this.meta.updateTag({ name: 'twitter:title', content: a.title });
-    this.meta.updateTag({ name: 'twitter:description', content: desc });
-    this.meta.updateTag({ name: 'twitter:image', content: image });
+    // Load article when slug changes
+    const slug = this.slug();
+    if (!slug) return;
 
-    this.jsonld.setJsonLd('ld-article', {
-      '@context': 'https://schema.org',
-      '@type': 'Article',
-      headline: a.title,
-      description: desc,
-      author: { '@type': 'Person', name: a.author.name },
-      datePublished: a.publishedAt,
-      image,
+    this.blogService.getBlogPostBySlug(slug).subscribe(article => {
+      this.article.set(article);
+      this.updateMetadata(article);
+      // Load related articles
+      this.blogService.getRelatedPosts(article.id, 2).subscribe(posts => {
+        this.relatedArticles.set(posts);
+        this.loading.set(false);
+      });
     });
   }
 
-  mockArticles: BlogPost[] = [
-    {
-      id: '1',
-      title: 'The Future of Renewable Energy: Solar Power Innovations',
-      slug: 'future-renewable-energy-solar',
-      excerpt: 'Exploring cutting-edge solar technologies that are revolutionizing clean energy production worldwide.',
-      content: '',
-      heroUrl: 'https://images.unsplash.com/photo-1509391366360-2e959784a276?q=80&w=1200&auto=format&fit=crop',
-      publishedAt: '2025-09-01',
-      author: { 
-        name: 'Dr. Sarah Chen', 
-        avatar: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?q=80&w=150&auto=format&fit=crop',
-        bio: 'Renewable Energy Researcher at Stanford University'
-      },
-      tags: ['renewable', 'solar', 'innovation'],
-      element: 'fire',
-      readTime: 8,
-      featured: true
-    },
-    {
-      id: '2',
-      title: 'Ocean Conservation: Protecting Marine Biodiversity',
-      slug: 'ocean-conservation-marine-biodiversity',
-      excerpt: 'How marine protected areas are helping restore ocean ecosystems and protect endangered species.',
-      content: '',
-      heroUrl: 'https://images.unsplash.com/photo-1583212292454-1fe6229603b7?q=80&w=1200&auto=format&fit=crop',
-      publishedAt: '2025-08-28',
-      author: { 
-        name: 'Marine Biologist Alex Rivera', 
-        avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=150&auto=format&fit=crop',
-        bio: 'Marine Conservation Specialist'
-      },
-      tags: ['conservation', 'marine', 'biodiversity'],
-      element: 'water',
-      readTime: 6,
-      featured: true
-    }
-  ];
+  private updateMetadata(article: BlogPost): void {
+    const site = 'World is One Family';
+    this.title.setTitle(`${article.title} • ${site}`);
+    const desc = article.excerpt;
+    const image = article.heroUrl;
+
+    // Update meta tags
+    this.meta.updateTag({ name: 'description', content: desc });
+    this.meta.updateTag({ property: 'og:title', content: article.title });
+    this.meta.updateTag({ property: 'og:description', content: desc });
+    this.meta.updateTag({ property: 'og:type', content: 'article' });
+    this.meta.updateTag({ property: 'og:image', content: image ?? '' });
+    this.meta.updateTag({ name: 'twitter:card', content: 'summary_large_image' });
+    this.meta.updateTag({ name: 'twitter:title', content: article.title });
+    this.meta.updateTag({ name: 'twitter:description', content: desc });
+    this.meta.updateTag({ name: 'twitter:image', content: image ?? '' });
+
+    // Update JSON-LD
+    this.jsonld.setJsonLd('ld-article', {
+      '@context': 'https://schema.org',
+      '@type': 'Article',
+      headline: article.title,
+      description: desc,
+      author: { '@type': 'Person', name: article.author.name },
+      datePublished: article.publishedAt,
+      image,
+    });
+  }
 
   formatDate(dateString: string): string {
     const date = new Date(dateString);
@@ -221,6 +195,10 @@ export class BlogDetailComponent implements OnInit {
       month: 'long', 
       day: 'numeric' 
     });
+  }
+
+  hasArticle(): boolean {
+    return this.article() !== null;
   }
 }
 

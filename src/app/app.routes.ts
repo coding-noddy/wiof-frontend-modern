@@ -1,4 +1,4 @@
-import { Routes } from '@angular/router';
+﻿import { Routes } from '@angular/router';
 
 export const routes: Routes = [
   {
@@ -24,7 +24,7 @@ export const routes: Routes = [
   {
     path: 'element',
     title: 'Elements',
-    data: { description: 'Explore Earth, Water, Fire, Air and Space — learn, practice and share.' },
+    data: { description: 'Explore Earth, Water, Fire, Air and Space â€” learn, practice and share.' },
     loadChildren: () => import('./features/elements/elements.routes').then((m) => m.ELEMENT_ROUTES),
   },
   {
@@ -42,7 +42,7 @@ export const routes: Routes = [
   },
   {
     path: 'blog/:slug',
-    title: 'Blog — Article',
+    title: 'Blog â€” Article',
     data: { description: 'Read in-depth perspectives on sustainability and the five elements.' },
     loadComponent: () => import('./features/blog/blog-detail.component').then((m) => m.BlogDetailComponent),
   },
@@ -101,7 +101,7 @@ export const routes: Routes = [
   {
     path: '**',
     title: 'Not Found',
-    data: { description: 'The page you’re looking for doesn’t exist.' },
+    data: { description: 'The page youâ€™re looking for doesnâ€™t exist.' },
     loadComponent: () => import('./features/not-found/not-found.component').then((m) => m.NotFoundComponent),
   },
 ];

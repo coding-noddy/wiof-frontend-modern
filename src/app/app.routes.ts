@@ -25,6 +25,10 @@ export const routes: Routes = [
     loadComponent: () => import('./features/blog/blog.component').then((m) => m.BlogComponent),
   },
   {
+    path: 'blog/:slug',
+    loadComponent: () => import('./features/blog/blog-detail.component').then((m) => m.BlogDetailComponent),
+  },
+  {
     path: 'quiz',
     loadComponent: () => import('./features/quiz/quiz.component').then((m) => m.QuizComponent),
   },

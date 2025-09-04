@@ -64,7 +64,7 @@ import { FocusItem, FocusFilter } from '../../shared/models/focus.model';
         <div *ngIf="featuredItems().length > 0" class="mb-12">
           <h2 class="text-2xl font-bold mb-6">Featured {{ getTypeLabel() }}</h2>
           <div class="grid lg:grid-cols-2 gap-8">
-            <div *ngFor="let item of featuredItems()" class="card overflow-hidden hover:shadow-lg transition">
+            <div *ngFor="let item of featuredItems()" class="card overflow-hidden hover:shadow-lg transition" tabindex="0" role="link" (click)="openItem(item)" (keyup.enter)="openItem(item)">
               <div class="aspect-video bg-slate-200 overflow-hidden">
                 <img [src]="item.imageUrl" [alt]="item.title" 
                      class="w-full h-full object-cover hover:scale-105 transition duration-300" />
@@ -128,7 +128,7 @@ import { FocusItem, FocusFilter } from '../../shared/models/focus.model';
           </div>
           
           <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            <div *ngFor="let item of paginatedItems()" class="card overflow-hidden hover:shadow-md transition">
+            <div *ngFor="let item of paginatedItems()" class="card overflow-hidden hover:shadow-md transition" tabindex="0" role="link" (click)="openItem(item)" (keyup.enter)="openItem(item)">
               <div class="aspect-video bg-slate-200 overflow-hidden">
                 <img [src]="item.imageUrl" [alt]="item.title" 
                      class="w-full h-full object-cover hover:scale-105 transition duration-300" />
@@ -458,5 +458,10 @@ export class FocusComponent {
   goToPage(page: number) {
     this.currentPage.set(page);
   }
-}
 
+  openItem(item: FocusItem) {
+    if (item.website) {
+      window.open(item.website, '_blank');
+    }
+  }
+}

@@ -1,8 +1,10 @@
-﻿import { Component, computed, inject } from '@angular/core';
+import { Component, OnInit, computed, inject } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { NgIf, NgFor } from '@angular/common';
 import { ElementBadgeComponent } from '../../shared/ui/element-badge.component';
 import { BlogPost } from '../../shared/models/blog.model';
+import { Meta, Title } from '@angular/platform-browser';
+import { JsonLdService } from '../../shared/seo/json-ld.service';
 
 @Component({
   selector: 'app-blog-detail',
@@ -119,8 +121,11 @@ import { BlogPost } from '../../shared/models/blog.model';
     </article>
   `
 })
-export class BlogDetailComponent {
+export class BlogDetailComponent implements OnInit {
   route = inject(ActivatedRoute);
+  meta = inject(Meta);
+  title = inject(Title);
+  jsonld = inject(JsonLdService);
   
   slug = computed(() => this.route.snapshot.paramMap.get('slug') || '');
   
@@ -131,7 +136,7 @@ export class BlogDetailComponent {
 
   relatedArticles = computed(() => {
     const current = this.article();
-    if (!current) return [];
+    if (!current) return [] as BlogPost[];
     
     return this.mockArticles
       .filter(article => 
@@ -141,6 +146,34 @@ export class BlogDetailComponent {
       )
       .slice(0, 2);
   });
+
+  ngOnInit(): void {
+    const a = this.article();
+    if (!a) return;
+    const site = 'World is One Family';
+    this.title.setTitle(`${a.title} • ${site}`);
+    const desc = a.excerpt;
+    const image = a.heroUrl;
+    this.meta.updateTag({ name: 'description', content: desc });
+    this.meta.updateTag({ property: 'og:title', content: a.title });
+    this.meta.updateTag({ property: 'og:description', content: desc });
+    this.meta.updateTag({ property: 'og:type', content: 'article' });
+    this.meta.updateTag({ property: 'og:image', content: image });
+    this.meta.updateTag({ name: 'twitter:card', content: 'summary_large_image' });
+    this.meta.updateTag({ name: 'twitter:title', content: a.title });
+    this.meta.updateTag({ name: 'twitter:description', content: desc });
+    this.meta.updateTag({ name: 'twitter:image', content: image });
+
+    this.jsonld.setJsonLd('ld-article', {
+      '@context': 'https://schema.org',
+      '@type': 'Article',
+      headline: a.title,
+      description: desc,
+      author: { '@type': 'Person', name: a.author.name },
+      datePublished: a.publishedAt,
+      image,
+    });
+  }
 
   mockArticles: BlogPost[] = [
     {
@@ -190,3 +223,4 @@ export class BlogDetailComponent {
     });
   }
 }
+

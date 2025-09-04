@@ -60,5 +60,12 @@ export const routes: Routes = [
     path: 'donate',
     loadComponent: () => import('./features/donate/donate.component').then((m) => m.DonateComponent),
   },
-  { path: '**', redirectTo: '' },
+  {
+    path: 'privacy-policy',
+    loadComponent: () => import('./features/privacy/privacy.component').then((m) => m.PrivacyComponent),
+  },
+  {
+    path: '**',
+    loadComponent: () => import('./features/not-found/not-found.component').then((m) => m.NotFoundComponent),
+  },
 ];

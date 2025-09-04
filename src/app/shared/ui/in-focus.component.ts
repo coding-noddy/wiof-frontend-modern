@@ -67,8 +67,49 @@ export interface FocusStory {
             </a>
           </div>
           
-          <!-- Secondary stories (small) -->
+          <!-- Right column: Course in Focus + secondary stories -->
           <div class="space-y-4">
+            <!-- Course in Focus (compact card) -->
+            <div class="card overflow-hidden hover:shadow-md transition">
+              <div class="aspect-video bg-slate-200 overflow-hidden">
+                <img
+                  [src]="courseInFocus.imageUrl"
+                  [alt]="courseInFocus.title"
+                  class="w-full h-full object-cover hover:scale-105 transition duration-300"
+                />
+              </div>
+              <div class="p-4">
+                <div class="flex items-center justify-between mb-2">
+                  <div class="flex items-center gap-2">
+                    <app-element-badge [element]="courseInFocus.element" />
+                    <span class="text-xs text-slate-500">{{ courseInFocus.provider }}</span>
+                  </div>
+                  <span class="text-xs px-2 py-1 bg-slate-100 text-slate-600 rounded-full">
+                    {{ courseInFocus.level }} • {{ courseInFocus.duration }}
+                  </span>
+                </div>
+                <h4 class="font-medium text-sm leading-tight mb-2">Course in Focus: {{ courseInFocus.title }}</h4>
+                <p class="text-xs text-slate-600 line-clamp-2 mb-3">{{ courseInFocus.description }}</p>
+                <div class="flex gap-2">
+                  <a
+                    *ngIf="courseInFocus.url"
+                    [href]="courseInFocus.url"
+                    target="_blank"
+                    class="px-3 py-2 rounded-xl bg-water text-white text-xs font-medium hover:bg-water/90 transition"
+                  >
+                    View course
+                  </a>
+                  <a
+                    routerLink="/focus/course"
+                    class="px-3 py-2 rounded-xl border border-slate-300 text-xs hover:bg-slate-50 transition"
+                  >
+                    More courses
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            <!-- Secondary stories (small) -->
             <div *ngFor="let story of secondaryStories" 
                  class="card overflow-hidden hover:shadow-md transition">
               <a [routerLink]="['/focus', story.type, story.id]" class="block">
@@ -129,4 +170,18 @@ export class InFocusComponent {
       imageUrl: 'https://images.unsplash.com/photo-1513622470522-26c3c8a854bc?q=80&w=600&auto=format&fit=crop'
     }
   ];
+
+  courseInFocus = {
+    id: 'intro-to-sustainability',
+    title: 'Introduction to Sustainability',
+    provider: 'Coursera • University of Illinois at Urbana-Champaign',
+    description:
+      'Learn core sustainability concepts and practical strategies for sustainable development across energy, ecosystems, and policy.',
+    element: 'earth' as const,
+    imageUrl:
+      'https://images.unsplash.com/photo-1501004318641-b39e6451bec6?q=80&w=800&auto=format&fit=crop',
+    level: 'Beginner',
+    duration: '15 hours',
+    url: 'https://www.coursera.org/learn/sustainability',
+  };
 }

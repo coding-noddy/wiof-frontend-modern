@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Component, inject } from '@angular/core';
+import { Router, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-header',
@@ -23,14 +23,45 @@ import { RouterLink } from '@angular/router';
           <a routerLink="/about" class="hover:text-water">About</a>
           <a routerLink="/donate" class="hover:text-water">Donate</a>
         </nav>
-        <a
-          routerLink="/take-action"
-          class="ml-4 inline-flex items-center px-4 py-2 rounded-full bg-water text-white text-sm shadow-soft hover:opacity-90"
-        >
-          Take Action
-        </a>
+        <div class="flex items-center gap-3">
+          <form class="hidden md:flex items-center gap-2" (submit)="onSearch(search.value); $event.preventDefault()">
+            <input #search type="search" placeholder="Search" aria-label="Search site"
+              class="w-40 border border-slate-300 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-water" />
+            <button class="px-3 py-2 rounded-xl border border-slate-300 text-sm">Search</button>
+          </form>
+          <button type="button" (click)="toggleDark()" class="px-3 py-2 rounded-xl border border-slate-300 text-sm" aria-label="Toggle dark mode">
+            🌙
+          </button>
+          <a
+            routerLink="/take-action"
+            class="ml-2 inline-flex items-center px-4 py-2 rounded-full bg-water text-white text-sm shadow-soft hover:opacity-90"
+          >
+            Take Action
+          </a>
+        </div>
       </div>
     </header>
   `,
 })
-export class HeaderComponent {}
+export class HeaderComponent {
+  private router = inject(Router);
+  onSearch(q: string) {
+    const query = (q || '').trim();
+    if (!query) return;
+    this.router.navigate(['/search'], { queryParams: { q: query } });
+  }
+
+  toggleDark() {
+    const root = document.documentElement;
+    const isDark = root.classList.toggle('dark');
+    try { localStorage.setItem('theme', isDark ? 'dark' : 'light'); } catch {}
+  }
+  constructor() {
+    try {
+      const pref = localStorage.getItem('theme');
+      if (pref === 'dark') {
+        document.documentElement.classList.add('dark');
+      }
+    } catch {}
+  }
+}

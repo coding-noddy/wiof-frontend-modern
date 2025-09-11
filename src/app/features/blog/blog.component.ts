@@ -69,7 +69,7 @@ import { BlogPost, BlogFilter } from '../../shared/models/blog.model';
               <a [routerLink]="['/blog', article.slug]" class="block group">
                 <div class="aspect-video bg-slate-200 overflow-hidden">
                   <img [src]="article.heroUrl" [alt]="article.title" 
-                       class="w-full h-full object-cover group-hover:scale-105 transition duration-300" />
+                       class="w-full h-full object-cover group-hover:scale-105 transition duration-300" loading="lazy" />
                 </div>
                 <div class="p-6">
                   <div class="flex items-center gap-3 mb-3">
@@ -110,7 +110,7 @@ import { BlogPost, BlogFilter } from '../../shared/models/blog.model';
               <a [routerLink]="['/blog', article.slug]" class="block group">
                 <div class="aspect-video bg-slate-200 overflow-hidden">
                   <img [src]="article.heroUrl" [alt]="article.title" 
-                       class="w-full h-full object-cover group-hover:scale-105 transition duration-300" />
+                       class="w-full h-full object-cover group-hover:scale-105 transition duration-300" loading="lazy" />
                 </div>
                 <div class="p-4">
                   <div class="flex items-center gap-2 mb-2">

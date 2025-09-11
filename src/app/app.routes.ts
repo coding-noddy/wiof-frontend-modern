@@ -14,6 +14,12 @@ export const routes: Routes = [
     data: { description: 'Learn more about the World is One Family initiative.' },
     loadComponent: () => import('./features/about/about.component').then((m) => m.AboutComponent),
   },
+  {
+    path: 'search',
+    title: 'Search',
+    data: { description: 'Search articles, videos, courses and events.' },
+    loadComponent: () => import('./features/search/search.component').then(m => m.SearchComponent),
+  },
   // app.routes.ts
   {
     path: 'element',

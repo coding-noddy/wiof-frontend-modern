@@ -107,6 +107,30 @@ import { WidgetTeaserComponent } from '../../shared/ui/widget-teaser.component';
       </div>
     </section>
 
+    <!-- Latest from Blog -->
+    <section class="section">
+      <div class="container">
+        <div class="flex items-end justify-between mb-6">
+          <div>
+            <h2 class="section-title">Latest from Blog</h2>
+            <p class="section-sub">Fresh stories and insights.</p>
+          </div>
+          <a routerLink="/blog" class="text-water">Read all</a>
+        </div>
+        <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <a *ngFor="let b of latestBlog" [routerLink]="['/blog', b.slug]" class="card overflow-hidden block group">
+            <div class="aspect-video bg-slate-200 overflow-hidden">
+              <img [src]="b.heroUrl" [alt]="b.title" class="w-full h-full object-cover group-hover:scale-105 transition" loading="lazy" />
+            </div>
+            <div class="p-4">
+              <h3 class="font-semibold leading-tight mb-2">{{ b.title }}</h3>
+              <p class="text-slate-600 text-sm line-clamp-2">{{ b.excerpt }}</p>
+            </div>
+          </a>
+        </div>
+      </div>
+    </section>
+
     <!-- In Focus -->
     <app-in-focus />
 
@@ -181,6 +205,27 @@ export class HomeComponent {
         'https://images.unsplash.com/photo-1469474968028-56623f02e42e?q=80&w=1200&auto=format&fit=crop',
       element: 'air',
     },
+  ];
+
+  latestBlog = [
+    {
+      title: 'The Future of Renewable Energy: Solar Power Innovations',
+      slug: 'future-renewable-energy-solar',
+      excerpt: 'Exploring cutting-edge solar technologies that are revolutionizing clean energy production worldwide.',
+      heroUrl: 'https://images.unsplash.com/photo-1509391366360-2e959784a276?q=80&w=1200&auto=format&fit=crop'
+    },
+    {
+      title: 'Ocean Conservation: Protecting Marine Biodiversity',
+      slug: 'ocean-conservation-marine-biodiversity',
+      excerpt: 'How marine protected areas are helping restore oceans and protect species.',
+      heroUrl: 'https://images.unsplash.com/photo-1583212292454-1fe6229603b7?q=80&w=1200&auto=format&fit=crop'
+    },
+    {
+      title: 'Urban Forests: Green Solutions for City Air Quality',
+      slug: 'urban-forests-city-air-quality',
+      excerpt: 'How urban forestry initiatives are improving air quality and creating healthier cities.',
+      heroUrl: 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?q=80&w=1200&auto=format&fit=crop'
+    }
   ];
 }
 

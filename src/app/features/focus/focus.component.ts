@@ -67,7 +67,7 @@ import { FocusItem, FocusFilter } from '../../shared/models/focus.model';
             <div *ngFor="let item of featuredItems()" class="card overflow-hidden hover:shadow-lg transition" tabindex="0" role="link" (click)="openItem(item)" (keyup.enter)="openItem(item)">
               <div class="aspect-video bg-slate-200 overflow-hidden">
                 <img [src]="item.imageUrl" [alt]="item.title" 
-                     class="w-full h-full object-cover hover:scale-105 transition duration-300" />
+                     class="w-full h-full object-cover hover:scale-105 transition duration-300" loading="lazy" />
               </div>
               <div class="p-6">
                 <div class="flex items-center gap-3 mb-3">
@@ -131,7 +131,7 @@ import { FocusItem, FocusFilter } from '../../shared/models/focus.model';
             <div *ngFor="let item of paginatedItems()" class="card overflow-hidden hover:shadow-md transition" tabindex="0" role="link" (click)="openItem(item)" (keyup.enter)="openItem(item)">
               <div class="aspect-video bg-slate-200 overflow-hidden">
                 <img [src]="item.imageUrl" [alt]="item.title" 
-                     class="w-full h-full object-cover hover:scale-105 transition duration-300" />
+                     class="w-full h-full object-cover hover:scale-105 transition duration-300" loading="lazy" />
               </div>
               <div class="p-4">
                 <div class="flex items-center gap-2 mb-2">

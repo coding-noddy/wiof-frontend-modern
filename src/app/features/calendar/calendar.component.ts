@@ -223,6 +223,11 @@ export class CalendarComponent {
 
   weekDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
+  constructor() {
+    // initialize JSON-LD on first render
+    setTimeout(() => this.updateJsonLd());
+  }
+
   allEvents = signal<CalendarEvent[]>([
     {
       id: '1',

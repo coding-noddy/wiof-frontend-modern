@@ -1,8 +1,9 @@
-import { Component, computed, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { NgFor, NgIf, NgClass, TitleCasePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ElementBadgeComponent } from '../../shared/ui/element-badge.component';
 import { CalendarEvent, CalendarFilter } from '../../shared/models/calendar.model';
+import { JsonLdService } from '../../shared/seo/json-ld.service';
 
 @Component({
   selector: 'app-calendar',
@@ -212,6 +213,7 @@ import { CalendarEvent, CalendarFilter } from '../../shared/models/calendar.mode
   `,
 })
 export class CalendarComponent {
+  private jsonld = inject(JsonLdService);
   viewMode = signal<'calendar' | 'list'>('calendar');
   currentMonth = signal(9);
   currentYear = signal(2025);
@@ -364,6 +366,7 @@ export class CalendarComponent {
 
   setViewMode(mode: 'calendar' | 'list') {
     this.viewMode.set(mode);
+    this.updateJsonLd();
   }
 
   previousMonth() {
@@ -373,6 +376,7 @@ export class CalendarComponent {
     } else {
       this.currentMonth.update(m => m - 1);
     }
+    this.updateJsonLd();
   }
 
   nextMonth() {
@@ -382,9 +386,11 @@ export class CalendarComponent {
     } else {
       this.currentMonth.update(m => m + 1);
     }
+    this.updateJsonLd();
   }
 
   updateFilters() {
+    this.updateJsonLd();
   }
 
   exportCalendar() {
@@ -437,6 +443,28 @@ export class CalendarComponent {
 
   formatICSDate(date: Date): string {
     return date.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+  }
+
+  // Update Events JSON-LD for filtered events (list or calendar)
+  updateJsonLd() {
+    const events = this.filteredEvents();
+    const graph = events.map(e => {
+      const start = new Date(`${e.date}T${this.convertTo24Hour(e.time)}`);
+      const end = e.endTime
+        ? new Date(`${e.date}T${this.convertTo24Hour(e.endTime)}`)
+        : new Date(start.getTime() + 60 * 60 * 1000);
+      return {
+        '@type': 'Event',
+        name: e.title,
+        description: e.description,
+        startDate: start.toISOString(),
+        endDate: end.toISOString(),
+        eventAttendanceMode: e.isOnline ? 'https://schema.org/OnlineEventAttendanceMode' : 'https://schema.org/OfflineEventAttendanceMode',
+        location: { '@type': 'Place', name: e.location },
+        organizer: { '@type': 'Organization', name: e.organizer },
+      };
+    });
+    this.jsonld.setJsonLd('ld-events', { '@context': 'https://schema.org', '@graph': graph });
   }
 
   getEventColorClass(element: string): string {

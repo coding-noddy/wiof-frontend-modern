@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal } from '@angular/core';
+﻿import { Component, computed, inject, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { NgFor, NgIf, NgClass, TitleCasePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -75,7 +75,7 @@ import { FocusItem, FocusFilter } from '../../shared/models/focus.model';
                   <span class="text-sm px-2 py-1 bg-slate-100 text-slate-600 rounded-full">
                     {{ item.type | titlecase }}
                   </span>
-                  <span *ngIf="item.location" class="text-sm text-slate-500">📍 {{ item.location }}</span>
+                  <span *ngIf="item.location" class="text-sm text-slate-500">ðŸ“ {{ item.location }}</span>
                 </div>
                 <h3 class="font-semibold text-xl leading-tight mb-3">{{ item.title }}</h3>
                 <p class="text-slate-600 mb-4">{{ item.description }}</p>
@@ -93,7 +93,7 @@ import { FocusItem, FocusFilter } from '../../shared/models/focus.model';
                   <h4 class="text-sm font-medium mb-2">Key Actions:</h4>
                   <ul class="text-sm text-slate-600 space-y-1">
                     <li *ngFor="let action of item.actions.slice(0, 3)" class="flex items-start gap-2">
-                      <span class="text-water">•</span>
+                      <span class="text-water">â€¢</span>
                       <span>{{ action }}</span>
                     </li>
                   </ul>
@@ -144,7 +144,7 @@ import { FocusItem, FocusFilter } from '../../shared/models/focus.model';
                 <p class="text-slate-600 text-sm mb-3 line-clamp-2">{{ item.description }}</p>
                 
                 <div class="flex items-center justify-between text-xs">
-                  <span *ngIf="item.location" class="text-slate-500">📍 {{ item.location }}</span>
+                  <span *ngIf="item.location" class="text-slate-500">ðŸ“ {{ item.location }}</span>
                   <div class="flex gap-1">
                     <a *ngIf="item.website" 
                        [href]="item.website" 
@@ -190,7 +190,7 @@ import { FocusItem, FocusFilter } from '../../shared/models/focus.model';
 
         <!-- No Results -->
         <div *ngIf="filteredItems().length === 0" class="text-center py-12">
-          <div class="text-slate-400 text-6xl mb-4">🔍</div>
+          <div class="text-slate-400 text-6xl mb-4">ðŸ”</div>
           <h3 class="text-xl font-semibold text-slate-600 mb-2">No results found</h3>
           <p class="text-slate-500">Try adjusting your filters to see more items.</p>
         </div>

@@ -29,6 +29,9 @@ import { Router, RouterLink } from '@angular/router';
               class="w-40 border border-slate-300 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-water" />
             <button class="px-3 py-2 rounded-xl border border-slate-300 text-sm">Search</button>
           </form>
+          <button type="button" (click)="toggleDark()" class="px-3 py-2 rounded-xl border border-slate-300 text-sm" aria-label="Toggle dark mode">
+            🌙
+          </button>
           <a
             routerLink="/take-action"
             class="ml-2 inline-flex items-center px-4 py-2 rounded-full bg-water text-white text-sm shadow-soft hover:opacity-90"
@@ -46,5 +49,19 @@ export class HeaderComponent {
     const query = (q || '').trim();
     if (!query) return;
     this.router.navigate(['/search'], { queryParams: { q: query } });
+  }
+
+  toggleDark() {
+    const root = document.documentElement;
+    const isDark = root.classList.toggle('dark');
+    try { localStorage.setItem('theme', isDark ? 'dark' : 'light'); } catch {}
+  }
+  constructor() {
+    try {
+      const pref = localStorage.getItem('theme');
+      if (pref === 'dark') {
+        document.documentElement.classList.add('dark');
+      }
+    } catch {}
   }
 }

@@ -3,28 +3,29 @@ import { Firestore, collection, query, where, orderBy, limit, getDocs, QuerySnap
 import { Observable, from, map } from 'rxjs';
 import { BaseService } from '../base.service';
 import { ICalendarService } from '../interfaces/calendar.service.interface';
-import { CalendarEvent, EventFilter } from '../../../shared/models/calendar.model';
+import { CalendarEvent, CalendarFilter } from '../../../shared/models/calendar.model';
 
 // Mock Data
-const MOCK_EVENTS: CalendarEvent[] = Array.from({ length: 50 }).map((_, i) => ({
-  id: `event-${i + 1}`,
-  title: `${['Earth', 'Water', 'Fire', 'Air', 'Space'][i % 5]} ${['Conference', 'Workshop', 'Seminar', 'Action Day'][i % 4]}`,
-  description: `Join us for an engaging ${['conference', 'workshop', 'seminar', 'action day'][i % 4]} focused on ${['Earth', 'Water', 'Fire', 'Air', 'Space'][i % 5]}.`,
-  startDate: new Date(2025, Math.floor(i / 15), (i % 28) + 1).toISOString(),
-  endDate: new Date(2025, Math.floor(i / 15), (i % 28) + 1 + Math.floor(Math.random() * 3)).toISOString(),
-  location: {
-    name: ['New York', 'London', 'Tokyo', 'Paris', 'Sydney'][i % 5],
-    virtual: i % 3 === 0
-  },
-  type: ['conference', 'workshop', 'seminar', 'action'][i % 4],
-  element: ['earth', 'water', 'fire', 'air', 'space'][i % 5] as any,
-  organizer: {
-    name: ['Green Earth Foundation', 'Water Warriors', 'Clean Energy Alliance', 'Air Quality Initiative', 'Global Unity'][i % 5],
-    website: 'https://example.org'
-  },
-  featured: i < 10,
-  participants: Math.floor(Math.random() * 500) + 50
-}));
+const MOCK_EVENTS: CalendarEvent[] = Array.from({ length: 50 }).map((_, i) => {
+  const eventDate = new Date(2025, Math.floor(i / 15), (i % 28) + 1);
+  const eventHour = 9 + (i % 8); // Events between 9 AM and 5 PM
+  return {
+    id: `event-${i + 1}`,
+    title: `${['Earth', 'Water', 'Fire', 'Air', 'Space'][i % 5]} ${['Conference', 'Workshop', 'Seminar', 'Action Day'][i % 4]}`,
+    description: `Join us for an engaging ${['conference', 'workshop', 'seminar', 'action day'][i % 4]} focused on ${['Earth', 'Water', 'Fire', 'Air', 'Space'][i % 5]}.`,
+    date: eventDate.toISOString().split('T')[0],
+    time: `${eventHour}:00`,
+    endTime: `${eventHour + 2}:00`,
+    location: ['New York', 'London', 'Tokyo', 'Paris', 'Sydney'][i % 5],
+    element: ['earth', 'water', 'fire', 'air', 'space'][i % 5] as 'earth' | 'water' | 'fire' | 'air' | 'space',
+    type: (['webinar', 'cleanup', 'workshop', 'conference', 'meetup'][i % 5]) as 'webinar' | 'cleanup' | 'workshop' | 'conference' | 'meetup',
+    organizer: ['Green Earth Foundation', 'Water Warriors', 'Clean Energy Alliance', 'Air Quality Initiative', 'Global Unity'][i % 5],
+    registrationUrl: 'https://example.org/register',
+    isOnline: i % 3 === 0,
+    maxParticipants: 500,
+    currentParticipants: Math.floor(Math.random() * 500)
+  };
+});
 
 @Injectable({
   providedIn: 'root'
@@ -35,11 +36,11 @@ export class FirebaseCalendarService extends BaseService implements ICalendarSer
   getEvents(
     year: number,
     month: number,
-    filters?: EventFilter
+    filters?: CalendarFilter
   ): Observable<CalendarEvent[]> {
     if (this.isMockBackend) {
       let filteredEvents = MOCK_EVENTS.filter(event => {
-        const eventDate = new Date(event.startDate);
+        const eventDate = new Date(event.date);
         return eventDate.getFullYear() === year && eventDate.getMonth() === month;
       });
 
@@ -111,8 +112,8 @@ export class FirebaseCalendarService extends BaseService implements ICalendarSer
     if (this.isMockBackend) {
       const now = new Date();
       const upcoming = MOCK_EVENTS
-        .filter(e => new Date(e.startDate) > now)
-        .sort((a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime())
+        .filter(e => new Date(e.date) > now)
+        .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
         .slice(0, limitCount);
       return this.withMockDelay(upcoming);
     }

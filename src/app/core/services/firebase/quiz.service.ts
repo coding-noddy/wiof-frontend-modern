@@ -3,46 +3,50 @@ import { Firestore, collection, query, where, orderBy, limit, getDocs, QuerySnap
 import { Observable, from, map } from 'rxjs';
 import { BaseService } from '../base.service';
 import { IQuizService } from '../interfaces/quiz.service.interface';
-import { Quiz, QuizResult } from '../../../shared/models/quiz.model';
+import { Quiz, QuizQuestion, QuizResult } from '../../../shared/models/quiz.model';
+
+const ELEMENT_TYPES = ['earth', 'water', 'fire', 'air', 'space'] as const;
+type ElementType = typeof ELEMENT_TYPES[number];
 
 // Mock Data
-const MOCK_QUIZZES: Quiz[] = [
-  {
-    id: 'weekly-earth-1',
-    title: 'Earth Element Weekly Challenge',
-    description: 'Test your knowledge about soil conservation and biodiversity',
-    element: 'earth',
-    questions: [
-      {
-        id: 'q1',
-        question: 'Which practice helps improve soil health?',
-        element: 'earth',
-        options: [
-          'Crop rotation',
-          'Constant tilling',
-          'Single crop farming',
-          'Removing organic matter'
-        ],
-        correctAnswer: 0,
-        explanation: 'Crop rotation helps maintain soil nutrients and prevent soil depletion.'
-      },
-      // More questions...
-    ],
-    publishedAt: new Date(2025, 10, 1).toISOString(),
-    totalParticipants: 1250,
-    averageScore: 72
-  },
-  // More quizzes for other elements...
-].concat(
-  Array.from({ length: 15 }).map((_, i) => ({
+const BASE_QUIZ: Quiz = {
+  id: 'weekly-earth-1',
+  title: 'Earth Element Weekly Challenge',
+  description: 'Test your knowledge about soil conservation and biodiversity',
+  element: ELEMENT_TYPES[0],
+  questions: [
+    {
+      id: 'q1',
+      question: 'Which practice helps improve soil health?',
+      element: ELEMENT_TYPES[0],
+      options: [
+        'Crop rotation',
+        'Constant tilling',
+        'Single crop farming',
+        'Removing organic matter'
+      ],
+      correctAnswer: 0,
+      explanation: 'Crop rotation helps maintain soil nutrients and prevent soil depletion.'
+    }
+  ],
+  publishedAt: new Date(2025, 10, 1).toISOString(),
+  totalParticipants: 1250,
+  averageScore: 72
+};
+
+// Generate additional quizzes
+const GENERATED_QUIZZES: Quiz[] = Array.from({ length: 15 }).map((_, i) => {
+  const elementIndex = i % 5;
+  const elementType = ELEMENT_TYPES[elementIndex];
+  return {
     id: `quiz-${i + 1}`,
-    title: `${['Earth', 'Water', 'Fire', 'Air', 'Space'][i % 5]} Element Quiz ${Math.floor(i / 5) + 1}`,
-    description: `Test your knowledge about ${['Earth', 'Water', 'Fire', 'Air', 'Space'][i % 5]} element`,
-    element: ['earth', 'water', 'fire', 'air', 'space'][i % 5] as any,
-    questions: Array.from({ length: 5 }).map((_, j) => ({
+    title: `${['Earth', 'Water', 'Fire', 'Air', 'Space'][elementIndex]} Element Quiz ${Math.floor(i / 5) + 1}`,
+    description: `Test your knowledge about ${['Earth', 'Water', 'Fire', 'Air', 'Space'][elementIndex]} element`,
+    element: elementType,
+    questions: Array.from({ length: 5 }).map<QuizQuestion>((_, j) => ({
       id: `q${j + 1}`,
       question: `Sample Question ${j + 1}`,
-      element: ['earth', 'water', 'fire', 'air', 'space'][i % 5] as any,
+      element: elementType,
       options: ['Option A', 'Option B', 'Option C', 'Option D'],
       correctAnswer: Math.floor(Math.random() * 4),
       explanation: 'Sample explanation for the correct answer.'
@@ -50,8 +54,10 @@ const MOCK_QUIZZES: Quiz[] = [
     publishedAt: new Date(2025, 9, i + 1).toISOString(),
     totalParticipants: Math.floor(Math.random() * 1000) + 100,
     averageScore: Math.floor(Math.random() * 30) + 60
-  }))
-);
+  };
+});
+
+const MOCK_QUIZZES: Quiz[] = [BASE_QUIZ, ...GENERATED_QUIZZES];
 
 @Injectable({
   providedIn: 'root'
@@ -61,7 +67,7 @@ export class FirebaseQuizService extends BaseService implements IQuizService {
 
   getQuizzes(element?: string): Observable<Quiz[]> {
     if (this.isMockBackend) {
-      const filteredQuizzes = element 
+      const filteredQuizzes = element
         ? MOCK_QUIZZES.filter(quiz => quiz.element === element)
         : MOCK_QUIZZES;
       return this.withMockDelay(filteredQuizzes);

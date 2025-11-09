@@ -1,16 +1,15 @@
-import { Component, OnInit, computed, inject, signal } from '@angular/core';
-import { NgFor, NgIf, NgClass } from '@angular/common';
+import { Component, OnInit, inject, signal } from '@angular/core';
+import { NgFor, NgIf } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { ElementBadgeComponent } from '../../shared/ui/element-badge.component';
-import { BlogPost, BlogFilter } from '../../shared/models/blog.model';
+import { BlogPost } from '../../shared/models/blog.model';
 import { BLOG_SERVICE } from '../../core/services/tokens';
-import { IBlogService } from '../../core/services/interfaces/blog.service.interface';
 
 @Component({
   selector: 'app-blog',
   standalone: true,
-  imports: [NgFor, NgIf, NgClass, RouterLink, FormsModule, ElementBadgeComponent],
+  imports: [NgFor, NgIf, RouterLink, FormsModule, ElementBadgeComponent],
   template: `
     <section class="section">
       <div class="container">
@@ -32,7 +31,7 @@ import { IBlogService } from '../../core/services/interfaces/blog.service.interf
                 class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-water focus:border-water"
               />
             </div>
-            
+
             <!-- Element Filter -->
             <select
               [(ngModel)]="selectedElement"
@@ -46,7 +45,7 @@ import { IBlogService } from '../../core/services/interfaces/blog.service.interf
               <option value="air">Air</option>
               <option value="space">Space</option>
             </select>
-            
+
             <!-- Tag Filter -->
             <select
               [(ngModel)]="selectedTag"
@@ -76,7 +75,7 @@ import { IBlogService } from '../../core/services/interfaces/blog.service.interf
               <div *ngFor="let article of featuredArticles()" class="card overflow-hidden hover:shadow-lg transition">
                 <a [routerLink]="['/blog', article.slug]" class="block group">
                   <div class="aspect-video bg-slate-200 overflow-hidden">
-                    <img [src]="article.heroUrl" [alt]="article.title" 
+                    <img [src]="article.heroUrl" [alt]="article.title"
                          class="w-full h-full object-cover group-hover:scale-105 transition duration-300" loading="lazy" />
                   </div>
                   <div class="p-6">
@@ -89,12 +88,12 @@ import { IBlogService } from '../../core/services/interfaces/blog.service.interf
                     <p class="text-slate-600 mb-4">{{ article.excerpt }}</p>
                     <div class="flex items-center justify-between">
                       <div class="flex items-center gap-2">
-                        <img [src]="article.author.avatar" [alt]="article.author.name" 
+                        <img [src]="article.author.avatar" [alt]="article.author.name"
                              class="w-8 h-8 rounded-full" />
                         <span class="text-sm font-medium">{{ article.author.name }}</span>
                       </div>
                       <div class="flex gap-2">
-                        <span *ngFor="let tag of article.tags.slice(0, 2)" 
+                        <span *ngFor="let tag of article.tags.slice(0, 2)"
                               class="text-xs px-2 py-1 bg-slate-100 text-slate-600 rounded-full">
                           {{ tag }}
                         </span>
@@ -112,12 +111,12 @@ import { IBlogService } from '../../core/services/interfaces/blog.service.interf
               <h2 class="text-2xl font-bold">All Articles</h2>
               <div class="text-sm text-slate-600">{{ regularArticles().length }} articles</div>
             </div>
-            
+
             <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
               <div *ngFor="let article of regularArticles()" class="card overflow-hidden hover:shadow-md transition">
                 <a [routerLink]="['/blog', article.slug]" class="block group">
                   <div class="aspect-video bg-slate-200 overflow-hidden">
-                    <img [src]="article.heroUrl" [alt]="article.title" 
+                    <img [src]="article.heroUrl" [alt]="article.title"
                          class="w-full h-full object-cover group-hover:scale-105 transition duration-300" loading="lazy" />
                   </div>
                   <div class="p-4">
@@ -139,16 +138,16 @@ import { IBlogService } from '../../core/services/interfaces/blog.service.interf
 
           <!-- Pagination -->
           <div class="flex items-center justify-center gap-2">
-            <button 
-              (click)="previousPage()" 
+            <button
+              (click)="previousPage()"
               [disabled]="currentPage() === 1"
               class="px-4 py-2 rounded-xl border border-slate-300 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition"
             >
               Previous
             </button>
             <span class="text-sm text-slate-600">Page {{ currentPage() }}</span>
-            <button 
-              (click)="nextPage()" 
+            <button
+              (click)="nextPage()"
               [disabled]="!hasMore()"
               class="px-4 py-2 rounded-xl border border-slate-300 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition"
             >
@@ -162,7 +161,7 @@ import { IBlogService } from '../../core/services/interfaces/blog.service.interf
 })
 export class BlogComponent implements OnInit {
   private blogService = inject(BLOG_SERVICE);
-  
+
   searchTerm = '';
   selectedElement = '';
   selectedTag = '';
@@ -178,7 +177,7 @@ export class BlogComponent implements OnInit {
   ngOnInit(): void {
     // Load featured articles
     this.loadFeaturedArticles();
-    
+
     // Load regular articles
     this.loadArticles();
   }
@@ -195,8 +194,8 @@ export class BlogComponent implements OnInit {
     // Load paginated articles
     this.blogService
       .getBlogPosts(
-        this.currentPage(), 
-        this.pageSize, 
+        this.currentPage(),
+        this.pageSize,
         this.selectedElement || undefined
       )
       .subscribe(response => {
@@ -242,10 +241,10 @@ export class BlogComponent implements OnInit {
 
   formatDate(dateString: string): string {
     const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', { 
-      year: 'numeric', 
-      month: 'short', 
-      day: 'numeric' 
+    return date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
     });
   }
 }

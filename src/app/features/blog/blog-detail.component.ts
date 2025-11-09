@@ -24,7 +24,7 @@ import { IBlogService } from '../../core/services/interfaces/blog.service.interf
       <div class="container max-w-4xl">
         <!-- Hero Image -->
         <div class="aspect-video bg-slate-200 rounded-2xl overflow-hidden mb-8">
-          <img [src]="article()!.heroUrl" [alt]="article()!.title" 
+          <img [src]="article()!.heroUrl" [alt]="article()!.title"
                class="w-full h-full object-cover" />
         </div>
 
@@ -35,20 +35,20 @@ import { IBlogService } from '../../core/services/interfaces/blog.service.interf
             <span class="text-sm text-slate-500">{{ article()!.readTime }} min read</span>
             <span class="text-sm text-slate-500">{{ formatDate(article()!.publishedAt) }}</span>
           </div>
-          
+
           <h1 class="text-4xl font-bold leading-tight mb-6">{{ article()!.title }}</h1>
-          
+
           <div class="flex items-center gap-4 mb-6">
-            <img [src]="article()!.author.avatar" [alt]="article()!.author.name" 
+            <img [src]="article()!.author.avatar" [alt]="article()!.author.name"
                  class="w-12 h-12 rounded-full" />
             <div>
               <div class="font-semibold">{{ article()!.author.name }}</div>
               <div *ngIf="article()!.author.bio" class="text-sm text-slate-600">{{ article()!.author.bio }}</div>
             </div>
           </div>
-          
+
           <div class="flex gap-2">
-            <span *ngFor="let tag of article()!.tags" 
+            <span *ngFor="let tag of article()!.tags"
                   class="text-sm px-3 py-1 bg-slate-100 text-slate-600 rounded-full">
               {{ tag }}
             </span>
@@ -73,13 +73,13 @@ import { IBlogService } from '../../core/services/interfaces/blog.service.interf
             <p>{{ article()!.excerpt }}</p>
             <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
           </div>
-          
+
           <div id="main-content">
             <h2>Main Content</h2>
             <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
             <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p>
           </div>
-          
+
           <div id="key-insights">
             <h2>Key Insights</h2>
             <ul>
@@ -89,7 +89,7 @@ import { IBlogService } from '../../core/services/interfaces/blog.service.interf
               <li>Education and awareness are fundamental to change</li>
             </ul>
           </div>
-          
+
           <div id="conclusion">
             <h2>Conclusion</h2>
             <p>Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.</p>
@@ -103,7 +103,7 @@ import { IBlogService } from '../../core/services/interfaces/blog.service.interf
             <div *ngFor="let related of relatedArticles()" class="card overflow-hidden hover:shadow-md transition">
               <a [routerLink]="['/blog', related.slug]" class="block">
                 <div class="aspect-video bg-slate-200 overflow-hidden">
-                  <img [src]="related.heroUrl" [alt]="related.title" 
+                  <img [src]="related.heroUrl" [alt]="related.title"
                        class="w-full h-full object-cover hover:scale-105 transition duration-300" />
                 </div>
                 <div class="p-4">
@@ -121,7 +121,7 @@ import { IBlogService } from '../../core/services/interfaces/blog.service.interf
 
         <!-- Back to Blog -->
         <div class="text-center mt-12">
-          <a routerLink="/blog" 
+          <a routerLink="/blog"
              class="inline-flex items-center px-6 py-3 rounded-xl bg-water text-white font-medium hover:bg-water/90 transition">
             ← Back to All Articles
           </a>
@@ -136,13 +136,13 @@ export class BlogDetailComponent implements OnInit {
   private meta = inject(Meta);
   private title = inject(Title);
   private jsonld = inject(JsonLdService);
-  
+
   loading = signal(true);
   article = signal<BlogPost | null>(null);
   relatedArticles = signal<BlogPost[]>([]);
-  
+
   slug = computed(() => this.route.snapshot.paramMap.get('slug') || '');
-  
+
   ngOnInit(): void {
     // Load article when slug changes
     const slug = this.slug();
@@ -190,10 +190,10 @@ export class BlogDetailComponent implements OnInit {
 
   formatDate(dateString: string): string {
     const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', { 
-      year: 'numeric', 
-      month: 'long', 
-      day: 'numeric' 
+    return date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
     });
   }
 

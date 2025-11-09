@@ -3,7 +3,7 @@ import { Firestore, collection, query, where, orderBy, limit, getDocs, QuerySnap
 import { Observable, from, map } from 'rxjs';
 import { BaseService } from '../base.service';
 import { IBlogService } from '../interfaces/blog.service.interface';
-import { Blog } from '../../../shared/models/blog.model';
+import { BlogPost } from '../../../shared/models/blog.model';
 
 // Mock data
 const MOCK_AUTHORS = [
@@ -12,7 +12,7 @@ const MOCK_AUTHORS = [
   { name: 'Maria Wind', avatar: 'https://i.pravatar.cc/150?u=maria', bio: 'Sustainability Expert' },
 ];
 
-const MOCK_BLOGS: Blog[] = Array.from({ length: 20 }).map((_, i) => ({
+const MOCK_BLOGS: BlogPost[] = Array.from({ length: 20 }).map((_, i) => ({
   id: `blog-${i + 1}`,
   title: `Understanding the ${['Earth', 'Water', 'Fire', 'Air', 'Space'][i % 5]} Element: A Deep Dive`,
   slug: `understanding-${['earth', 'water', 'fire', 'air', 'space'][i % 5]}-element-${i + 1}`,
@@ -36,20 +36,20 @@ export class FirebaseBlogService extends BaseService implements IBlogService {
     page: number,
     pageSize: number,
     element?: string
-  ): Observable<{ posts: Blog[]; hasMore: boolean }> {
+  ): Observable<{ posts: BlogPost[]; hasMore: boolean }> {
     if (this.isMockBackend) {
-      const filteredBlogs = element 
+      const filteredBlogs = element
         ? MOCK_BLOGS.filter(blog => blog.element === element)
         : MOCK_BLOGS;
-      
+
       const { items, hasMore } = this.paginateResponse(filteredBlogs, page, pageSize);
       return this.withMockDelay({ posts: items, hasMore });
     }
 
     const blogCollection = collection(this.db, 'blogs');
-    const blogQuery = element 
+    const blogQuery = element
       ? query(
-          blogCollection, 
+          blogCollection,
           where('element', '==', element),
           orderBy('publishedAt', 'desc'),
           limit(pageSize + 1)
@@ -61,13 +61,13 @@ export class FirebaseBlogService extends BaseService implements IBlogService {
         );
 
     const query$ = from(getDocs(blogQuery)).pipe(
-      map((snapshot: QuerySnapshot<DocumentData>) => 
+      map((snapshot: QuerySnapshot<DocumentData>) =>
         snapshot.docs.map(doc => ({
           id: doc.id,
           ...doc.data()
-        } as Blog))
+        } as BlogPost))
       ),
-      map(data => this.convertTimestamps<Blog[]>(data)),
+      map(data => this.convertTimestamps<BlogPost[]>(data)),
       map(items => ({
         posts: items.slice(0, pageSize),
         hasMore: items.length > pageSize
@@ -77,7 +77,7 @@ export class FirebaseBlogService extends BaseService implements IBlogService {
     return query$;
   }
 
-  getBlogPostBySlug(slug: string): Observable<Blog> {
+  getBlogPostBySlug(slug: string): Observable<BlogPost> {
     if (this.isMockBackend) {
       const blog = MOCK_BLOGS.find(b => b.slug === slug);
       if (!blog) {
@@ -102,13 +102,13 @@ export class FirebaseBlogService extends BaseService implements IBlogService {
         return {
           id: doc.id,
           ...doc.data()
-        } as Blog;
+        } as BlogPost;
       }),
-      map(data => this.convertTimestamps<Blog>(data))
+      map(data => this.convertTimestamps<BlogPost>(data))
     );
   }
 
-  getRecentPosts(limitCount: number): Observable<Blog[]> {
+  getRecentPosts(limitCount: number): Observable<BlogPost[]> {
     if (this.isMockBackend) {
       const recentPosts = MOCK_BLOGS
         .sort((a, b) => b.publishedAt.localeCompare(a.publishedAt))
@@ -128,13 +128,13 @@ export class FirebaseBlogService extends BaseService implements IBlogService {
         snapshot.docs.map(doc => ({
           id: doc.id,
           ...doc.data()
-        } as Blog))
+        } as BlogPost))
       ),
-      map(data => this.convertTimestamps<Blog[]>(data))
+      map(data => this.convertTimestamps<BlogPost[]>(data))
     );
   }
 
-  getRelatedPosts(postId: string, limitCount: number): Observable<Blog[]> {
+  getRelatedPosts(postId: string, limitCount: number): Observable<BlogPost[]> {
     if (this.isMockBackend) {
       const currentPost = MOCK_BLOGS.find(b => b.id === postId);
       if (!currentPost) {
@@ -161,9 +161,9 @@ export class FirebaseBlogService extends BaseService implements IBlogService {
         snapshot.docs.map(doc => ({
           id: doc.id,
           ...doc.data()
-        } as Blog))
+        } as BlogPost))
       ),
-      map(data => this.convertTimestamps<Blog[]>(data))
+      map(data => this.convertTimestamps<BlogPost[]>(data))
     );
   }
 }

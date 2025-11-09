@@ -56,7 +56,7 @@ export class FirebaseActionService extends BaseService implements IActionService
   }): Observable<ActionItem[]> {
     if (this.isMockBackend) {
       let filteredActions = [...MOCK_ACTIONS];
-      
+
       if (filters.element) {
         filteredActions = filteredActions.filter(a => a.element === filters.element);
       }
@@ -69,7 +69,7 @@ export class FirebaseActionService extends BaseService implements IActionService
       if (filters.timeNeeded) {
         filteredActions = filteredActions.filter(a => a.timeNeeded === filters.timeNeeded);
       }
-      
+
       return this.withMockDelay(filteredActions);
     }
 
@@ -109,10 +109,16 @@ export class FirebaseActionService extends BaseService implements IActionService
     const progressCollection = collection(this.db, 'userProgress');
     return from(getDocs(progressCollection)).pipe(
       map((snapshot: QuerySnapshot<DocumentData>) =>
-        snapshot.docs.map(doc => ({
-          id: doc.id,
-          ...doc.data()
-        } as ActionProgress))
+        snapshot.docs.map(doc => {
+          const data = doc.data();
+          return {
+            actionId: doc.id,
+            completedSteps: data['completedSteps'] || [],
+            startedAt: data['startedAt'] || new Date().toISOString(),
+            completedAt: data['completedAt'],
+            pledged: data['pledged'] || false
+          } as ActionProgress;
+        })
       ),
       map(data => this.convertTimestamps<ActionProgress[]>(data))
     );

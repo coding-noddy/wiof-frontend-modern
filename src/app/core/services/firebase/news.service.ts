@@ -1,12 +1,5 @@
-iimport { Firestore, collection, query, where, orderBy, limit, getDocs, QuerySnapshot, DocumentData, doc, getDoc } from '@angular/fire/firestore';inject, Injectable } from '@angular/core';
-import { Firestore, collection, query, where, orderBy, limit, getDocs, QuerySnapshot, DocumentData, doc,       map((queryRef) => getDocs(queryRef)),
-      mergeMap((promise: Promise<QuerySnapshot<DocumentData>>) => from(promise)),
-      map((snapshot: QuerySnapshot<DocumentData>) =>
-        snapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data()
-        } as NewsItem))
-      ), from '@angular/fire/firestore';
+import { Injectable, inject } from '@angular/core';
+import { Firestore, collection, query, where, orderBy, limit, getDocs, QuerySnapshot, DocumentData, doc, getDoc } from '@angular/fire/firestore';
 import { Observable, from, map, mergeMap } from 'rxjs';
 import { BaseService } from '../base.service';
 import { INewsService, NewsItem } from '../interfaces/news.service.interface';

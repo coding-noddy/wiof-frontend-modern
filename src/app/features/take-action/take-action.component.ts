@@ -1,9 +1,10 @@
-import { Component, computed, signal } from '@angular/core';
+import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { NgFor, NgIf, NgClass, TitleCasePipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { ElementBadgeComponent } from '../../shared/ui/element-badge.component';
 import { ActionItem, ActionProgress } from '../../shared/models/action.model';
+import { ACTION_SERVICE } from '../../core/services/tokens';
 
 @Component({
   selector: 'app-take-action',
@@ -86,9 +87,14 @@ import { ActionItem, ActionProgress } from '../../shared/models/action.model';
           </div>
         </div>
 
+        <!-- Loading state -->
+        <div *ngIf="loading()" class="text-center py-12">
+          <div class="text-slate-600">Loading actions...</div>
+        </div>
+
         <!-- Action Cards -->
-        <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-          <div *ngFor="let action of filteredActions()" class="card p-6 hover:shadow-lg transition">
+        <div *ngIf="!loading()" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+          <div *ngFor="let action of allActions()" class="card p-6 hover:shadow-lg transition">
             <div class="flex items-center justify-between mb-4">
               <app-element-badge [element]="action.element" />
               <div class="flex items-center gap-2">
@@ -220,163 +226,56 @@ import { ActionItem, ActionProgress } from '../../shared/models/action.model';
     </section>
   `,
 })
-export class TakeActionComponent {
+export class TakeActionComponent implements OnInit {
+  private actionService = inject(ACTION_SERVICE);
+
   selectedElement = '';
   selectedDifficulty = '';
   selectedCategory = '';
   selectedTime = '';
 
-  userProgress = signal<ActionProgress[]>([
-    { actionId: 'earth-1', completedSteps: [0, 1], startedAt: '2025-09-01', pledged: true },
-    { actionId: 'water-2', completedSteps: [0, 1, 2, 3], startedAt: '2025-08-28', completedAt: '2025-09-02', pledged: true },
-    { actionId: 'fire-1', completedSteps: [], startedAt: '2025-09-03', pledged: false }
-  ]);
+  loading = signal(true);
+  userProgress = signal<ActionProgress[]>([]);
+  allActions = signal<ActionItem[]>([]);
 
-  allActions = signal<ActionItem[]>([
-    {
-      id: 'earth-1',
-      title: 'Start Composting at Home',
-      description: 'Reduce food waste and create nutrient-rich soil for your garden.',
-      difficulty: 'easy',
-      timeNeeded: '30 min setup',
-      impactScore: 75,
-      category: 'waste',
-      element: 'earth',
-      checklist: [
-        'Choose a composting method (bin, tumbler, or pile)',
-        'Gather brown materials (leaves, paper, cardboard)',
-        'Collect green materials (food scraps, grass clippings)',
-        'Set up your composting system',
-        'Start adding materials in proper ratios',
-        'Monitor and turn regularly'
-      ],
-      completedBy: 1247
-    },
-    {
-      id: 'water-1',
-      title: 'Install Water-Saving Devices',
-      description: 'Reduce water consumption with simple, effective devices.',
-      difficulty: 'easy',
-      timeNeeded: '1 hour',
-      impactScore: 65,
-      category: 'conservation',
-      element: 'water',
-      checklist: [
-        'Purchase low-flow showerheads and faucet aerators',
-        'Install toilet tank displacement devices',
-        'Fix any leaky faucets or pipes',
-        'Set up rain collection system',
-        'Monitor water usage for one month'
-      ],
-      completedBy: 892
-    },
-    {
-      id: 'water-2',
-      title: 'Organize Beach Cleanup',
-      description: 'Rally your community to protect marine ecosystems.',
-      difficulty: 'medium',
-      timeNeeded: '4 hours',
-      impactScore: 90,
-      category: 'community',
-      element: 'water',
-      checklist: [
-        'Choose a beach location and get permits',
-        'Recruit volunteers through social media',
-        'Gather cleanup supplies and safety equipment',
-        'Conduct the cleanup event',
-        'Document and report collected waste data'
-      ],
-      completedBy: 156
-    },
-    {
-      id: 'fire-1',
-      title: 'Switch to Renewable Energy',
-      description: 'Transition your home to clean, renewable energy sources.',
-      difficulty: 'hard',
-      timeNeeded: '2-4 weeks',
-      impactScore: 95,
-      category: 'energy',
-      element: 'fire',
-      checklist: [
-        'Assess your current energy usage',
-        'Research renewable energy providers',
-        'Get quotes for solar panel installation',
-        'Apply for government incentives',
-        'Schedule installation',
-        'Monitor energy production and savings'
-      ],
-      completedBy: 78
-    },
-    {
-      id: 'air-1',
-      title: 'Use Public Transportation',
-      description: 'Reduce air pollution by choosing sustainable transport options.',
-      difficulty: 'easy',
-      timeNeeded: 'Daily habit',
-      impactScore: 70,
-      category: 'transport',
-      element: 'air',
-      checklist: [
-        'Research public transport routes in your area',
-        'Purchase monthly transit passes',
-        'Plan your commute using public transport',
-        'Track your carbon footprint reduction',
-        'Encourage others to join you'
-      ],
-      completedBy: 2341
-    },
-    {
-      id: 'space-1',
-      title: 'Practice Mindful Consumption',
-      description: 'Develop awareness of your consumption patterns and their impact.',
-      difficulty: 'medium',
-      timeNeeded: 'Ongoing',
-      impactScore: 80,
-      category: 'community',
-      element: 'space',
-      checklist: [
-        'Track your purchases for one week',
-        'Identify unnecessary consumption patterns',
-        'Research sustainable alternatives',
-        'Implement a "buy nothing" day weekly',
-        'Share your experience with others',
-        'Create a sustainable shopping plan'
-      ],
-      completedBy: 567
-    }
-  ]);
+  ngOnInit(): void {
+    // Load initial actions and user progress
+    this.loadActions();
+    this.loadUserProgress();
+  }
 
-  filteredActions = computed(() => {
-    let actions = this.allActions();
-    
-    if (this.selectedElement) {
-      actions = actions.filter(action => action.element === this.selectedElement);
-    }
-    
-    if (this.selectedDifficulty) {
-      actions = actions.filter(action => action.difficulty === this.selectedDifficulty);
-    }
-    
-    if (this.selectedCategory) {
-      actions = actions.filter(action => action.category === this.selectedCategory);
-    }
-    
-    if (this.selectedTime) {
-      actions = actions.filter(action => {
-        const time = action.timeNeeded.toLowerCase();
-        switch (this.selectedTime) {
-          case 'quick': return time.includes('min') && !time.includes('hour');
-          case 'medium': return time.includes('hour') || time.includes('1-2');
-          case 'long': return time.includes('week') || time.includes('day');
-          default: return true;
-        }
-      });
-    }
-    
-    return actions;
-  });
+  private loadActions(): void {
+    this.loading.set(true);
+    this.actionService.getActions({
+      element: this.selectedElement || undefined,
+      difficulty: this.selectedDifficulty || undefined,
+      category: this.selectedCategory || undefined,
+      timeNeeded: this.selectedTime || undefined
+    }).subscribe({
+      next: (actions) => {
+        this.allActions.set(actions);
+        this.loading.set(false);
+      },
+      error: (error) => {
+        console.error('Error loading actions:', error);
+        this.loading.set(false);
+      }
+    });
+  }
+
+  private loadUserProgress(): void {
+    this.actionService.getUserProgress().subscribe({
+      next: (progress) => {
+        this.userProgress.set(progress);
+      },
+      error: (error) => {
+        console.error('Error loading user progress:', error);
+      }
+    });
+  }
 
   updateFilters() {
+    this.loadActions();
   }
 
   getTotalActions(): number {
@@ -426,19 +325,26 @@ export class TakeActionComponent {
       pledged: false
     };
     
-    this.userProgress.update(progress => [...progress, newProgress]);
+    this.actionService.updateProgress(newProgress).subscribe({
+      next: () => {
+        this.loadUserProgress(); // Reload user progress to get the latest state
+      },
+      error: (error) => console.error('Error starting action:', error)
+    });
   }
 
   continueAction(actionId: string) {
+    // Navigate to action detail view or open action tracking modal
     console.log('Continue action:', actionId);
   }
 
   pledgeAction(actionId: string) {
-    this.userProgress.update(progress => 
-      progress.map(p => 
-        p.actionId === actionId ? { ...p, pledged: true } : p
-      )
-    );
+    this.actionService.pledgeAction(actionId).subscribe({
+      next: () => {
+        this.loadUserProgress(); // Reload user progress to get the latest state
+      },
+      error: (error) => console.error('Error pledging action:', error)
+    });
   }
 
   getElementBgClass(element: string): string {

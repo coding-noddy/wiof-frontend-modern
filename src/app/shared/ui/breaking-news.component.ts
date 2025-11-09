@@ -1,20 +1,13 @@
-import { Component } from '@angular/core';
-import { NgFor } from '@angular/common';
+import { Component, OnInit, inject } from '@angular/core';
+import { NgFor, NgIf, DatePipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
-
-export interface NewsItem {
-  id: string;
-  title: string;
-  excerpt: string;
-  date: string;
-  url?: string;
-  isExternal?: boolean;
-}
+import { NEWS_SERVICE } from '../../core/services/tokens';
+import { NewsItem } from '../../core/services/interfaces/news.service.interface';
 
 @Component({
   selector: 'app-breaking-news',
   standalone: true,
-  imports: [NgFor, RouterLink],
+  imports: [NgFor, NgIf, DatePipe, RouterLink],
   template: `
     <section class="section">
       <div class="container">
@@ -27,9 +20,9 @@ export interface NewsItem {
             View all news
           </a>
         </div>
-        
+
         <!-- News ticker/carousel -->
-        <div class="bg-gradient-to-r from-slate-50 to-slate-100 rounded-2xl p-6 border border-slate-200">
+        <div *ngIf="featuredNews" class="bg-gradient-to-r from-slate-50 to-slate-100 rounded-2xl p-6 border border-slate-200">
           <div class="grid md:grid-cols-2 gap-6">
             <!-- Featured news item -->
             <div class="space-y-4">
@@ -39,20 +32,24 @@ export interface NewsItem {
               </div>
               <div>
                 <h3 class="font-semibold text-lg leading-tight mb-2">{{ featuredNews.title }}</h3>
-                <p class="text-slate-600 text-sm mb-3">{{ featuredNews.excerpt }}</p>
+                <p class="text-slate-600 text-sm mb-3">{{ featuredNews.summary }}</p>
                 <div class="flex items-center justify-between">
-                  <span class="text-xs text-slate-500">{{ featuredNews.date }}</span>
-                  <a 
-                    [href]="featuredNews.url" 
-                    [target]="featuredNews.isExternal ? '_blank' : '_self'"
-                    class="text-water hover:text-water/80 text-sm font-medium"
-                  >
-                    Read more →
-                  </a>
+                  <span class="text-xs text-slate-500">{{ featuredNews.publishedAt | date:'MMM dd, yyyy' }}</span>
+                  <div class="flex items-center gap-1">
+                    <span *ngIf="featuredNews.element" class="text-xs px-2 py-1 rounded bg-slate-100">
+                      {{ featuredNews.element }}
+                    </span>
+                    <a
+                      [routerLink]="['/news', featuredNews.id]"
+                      class="text-water hover:text-water/80 text-sm font-medium"
+                    >
+                      Read more →
+                    </a>
+                  </div>
                 </div>
               </div>
             </div>
-            
+
             <!-- Recent news list -->
             <div class="space-y-3">
               <h4 class="font-medium text-slate-700 mb-3">Recent Updates</h4>
@@ -60,11 +57,15 @@ export interface NewsItem {
                 <div *ngFor="let item of recentNews" class="flex gap-3 p-3 bg-white rounded-xl border border-slate-100 hover:shadow-sm transition">
                   <div class="flex-1">
                     <h5 class="font-medium text-sm leading-tight mb-1">{{ item.title }}</h5>
-                    <p class="text-xs text-slate-500">{{ item.date }}</p>
+                    <div class="flex items-center gap-2">
+                      <p class="text-xs text-slate-500">{{ item.publishedAt | date:'MMM dd' }}</p>
+                      <span *ngIf="item.element" class="text-xs px-1.5 py-0.5 rounded bg-slate-100">
+                        {{ item.element }}
+                      </span>
+                    </div>
                   </div>
-                  <a 
-                    [href]="item.url" 
-                    [target]="item.isExternal ? '_blank' : '_self'"
+                  <a
+                    [routerLink]="['/news', item.id]"
                     class="text-water hover:text-water/80 text-xs font-medium self-start"
                   >
                     →
@@ -78,40 +79,19 @@ export interface NewsItem {
     </section>
   `,
 })
-export class BreakingNewsComponent {
-  featuredNews: NewsItem = {
-    id: '1',
-    title: 'Japan\'s Worst Wildfire in 50 years kills 1 person and damages 210 buildings forcing 4200 residents to flee',
-    excerpt: 'Japan\'s worst wildfire in more than half a century has killed at least one person and damaged over 200 buildings.',
-    date: 'Sat, Mar 08 2025',
-    url: 'https://example.com/japan-wildfire',
-    isExternal: true
-  };
+export class BreakingNewsComponent implements OnInit {
+  private readonly newsService = inject(NEWS_SERVICE);
 
-  recentNews: NewsItem[] = [
-    {
-      id: '2',
-      title: 'New Climate Action Plan Announced',
-      excerpt: '',
-      date: 'Mar 07 2025',
-      url: '/blog/climate-action-plan',
-      isExternal: false
-    },
-    {
-      id: '3',
-      title: 'Ocean Conservation Initiative Launched',
-      excerpt: '',
-      date: 'Mar 06 2025',
-      url: '/blog/ocean-conservation',
-      isExternal: false
-    },
-    {
-      id: '4',
-      title: 'Renewable Energy Milestone Reached',
-      excerpt: '',
-      date: 'Mar 05 2025',
-      url: '/blog/renewable-energy',
-      isExternal: false
-    }
-  ];
+  featuredNews?: NewsItem;
+  recentNews: NewsItem[] = [];
+
+  ngOnInit() {
+    // Get breaking news
+    this.newsService.getBreakingNews().subscribe(news => {
+      if (news.length > 0) {
+        [this.featuredNews, ...this.recentNews] = news;
+        this.recentNews = this.recentNews.slice(0, 3); // Limit to 3 recent news items
+      }
+    });
+  }
 }

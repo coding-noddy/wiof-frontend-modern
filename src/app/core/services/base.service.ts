@@ -2,8 +2,8 @@ import { Observable, of, delay, map } from 'rxjs';
 import { environment } from '../../../environments/environment';
 
 export abstract class BaseService {
-  // This can be controlled via environment config
-  protected isMockBackend = true; // We'll keep it true for now
+  // Controlled via environment config
+  protected isMockBackend = environment.mockBackend;
 
   // Add artificial delay to mock data to simulate network latency
   protected mockDelay = 500;

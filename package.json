@@ -6,7 +6,11 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "firebase:deploy": "firebase deploy",
+    "firebase:deploy:rules": "firebase deploy --only firestore:rules,storage",
+    "firebase:deploy:indexes": "firebase deploy --only firestore:indexes",
+    "firebase:deploy:hosting": "firebase deploy --only hosting"
   },
   "prettier": {
     "printWidth": 100,
@@ -27,10 +31,12 @@
     "@angular/common": "^20.2.3",
     "@angular/compiler": "^20.2.0",
     "@angular/core": "^20.2.0",
+    "@angular/fire": "^20.0.1",
     "@angular/forms": "^20.2.3",
     "@angular/material": "^20.2.1",
     "@angular/platform-browser": "^20.2.0",
     "@angular/router": "^20.2.0",
+    "firebase": "^12.5.0",
     "lucide-angular": "^0.542.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",

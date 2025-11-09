@@ -1,0 +1,52 @@
+name: Deploy Firebase Configuration to Staging
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'firebase/**'
+      - 'src/environments/**'
+  workflow_dispatch:  # Allow manual trigger
+
+# Ensure we only deploy to staging environment
+env:
+  FIREBASE_PROJECT_ID: wiof-staging
+
+jobs:
+  deploy-firebase-config:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install Firebase CLI
+        run: npm install -g firebase-tools
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Deploy Firestore Rules
+        run: firebase deploy --only firestore:rules
+        env:
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+
+      - name: Deploy Storage Rules
+        run: firebase deploy --only storage
+        env:
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+
+      - name: Deploy Firestore Indexes
+        run: firebase deploy --only firestore:indexes
+        env:
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+
+      - name: Deploy Hosting Configuration
+        run: firebase deploy --only hosting
+        env:
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}

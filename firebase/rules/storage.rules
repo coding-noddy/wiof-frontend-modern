@@ -1,0 +1,60 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    // Common functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isAuthenticated() &&
+        firestore.get(/databases/(default)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+
+    function isValidImage() {
+      return request.resource.contentType.matches('image/.*') &&
+             request.resource.size < 5 * 1024 * 1024 && // 5MB max
+             request.resource.contentType.matches('image/(jpeg|png|gif|webp)');
+    }
+
+    function isValidDocument() {
+      return request.resource.size < 10 * 1024 * 1024 && // 10MB max
+             request.resource.contentType.matches('application/(pdf|msword|vnd.openxmlformats-officedocument.wordprocessingml.document)');
+    }
+
+    // News images
+    match /news-images/{imageId} {
+      allow read: if true;
+      allow write: if isAdmin() && isValidImage();
+    }
+
+    // Blog images
+    match /blog-images/{imageId} {
+      allow read: if true;
+      allow write: if isAdmin() && isValidImage();
+    }
+
+    // Video thumbnails
+    match /video-thumbnails/{imageId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Focus images
+    match /focus-images/{imageId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // User avatars
+    match /user-avatars/{userId} {
+      allow read: if true;
+      allow write: if isAuthenticated() && (request.auth.uid == userId || isAdmin());
+    }
+
+    // Default deny all
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

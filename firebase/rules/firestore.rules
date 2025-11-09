@@ -1,0 +1,76 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Common functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isAuthenticated() &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+
+    function isNotRateLimited() {
+      return request.time > resource.data.lastAccess.toTime() + duration.value(1, 's') ||
+             !exists(/databases/$(database)/documents/users/$(request.auth.uid));
+    }
+
+    function hasValidRequest() {
+      return request.resource.data.keys().hasAll(['updatedAt', 'createdBy']) &&
+             request.resource.data.createdBy is string &&
+             request.resource.data.updatedAt is timestamp;
+    }
+
+    // Blog collection rules
+    match /blogs/{document=**} {
+      allow read: if true;  // Public read access
+      allow write: if isAdmin() && hasValidRequest() && isNotRateLimited();
+    }
+
+    // News collection rules
+    match /news/{document=**} {
+      allow read: if true;  // Public read access
+      allow write: if isAdmin() && hasValidRequest() && isNotRateLimited();
+    }
+
+    // Videos collection rules
+    match /videos/{document=**} {
+      allow read: if true;  // Public read access
+      allow write: if isAdmin();  // Only admins can write
+    }
+
+    // Focus items collection rules
+    match /focus/{document=**} {
+      allow read: if true;  // Public read access
+      allow write: if isAdmin();  // Only admins can write
+    }
+
+    // Quiz collection rules
+    match /quizzes/{document=**} {
+      allow read: if true;  // Public read access
+      allow write: if isAdmin();  // Only admins can write
+    }
+
+    // Actions collection rules
+    match /actions/{document=**} {
+      allow read: if true;  // Public read access
+      allow write: if isAdmin();  // Only admins can write
+    }
+
+    // Calendar events collection rules
+    match /calendar/{document=**} {
+      allow read: if true;  // Public read access
+      allow write: if isAdmin();  // Only admins can write
+    }
+
+    // User profiles collection rules
+    match /users/{userId} {
+      allow read: if true;
+      allow create: if isAuthenticated() && request.auth.uid == userId;
+      allow update: if isAuthenticated() && (request.auth.uid == userId || isAdmin());
+      allow delete: if isAdmin();
+    }
+  }
+}

@@ -1,10 +1,17 @@
-import { ApplicationConfig } from '@angular/core';
+import { ApplicationConfig, importProvidersFrom } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { provideRouter, TitleStrategy } from '@angular/router';
 import { routes } from './app.routes';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideHttpClient } from '@angular/common/http';
 import { AppTitleStrategy } from './shared/seo/app-title.strategy';
+
+// Firebase imports
+import { provideFirebaseApp, initializeApp } from '@angular/fire/app';
+import { getFirestore, provideFirestore } from '@angular/fire/firestore';
+import { getStorage, provideStorage } from '@angular/fire/storage';
+import { getAuth, provideAuth } from '@angular/fire/auth';
+import { environment } from '../environments/environment';
 
 import {
   QUIZ_SERVICE,
@@ -13,6 +20,7 @@ import {
   ACTION_SERVICE,
   FOCUS_SERVICE,
   CALENDAR_SERVICE,
+  NEWS_SERVICE,
 } from './core/services/tokens';
 
 import { FirebaseQuizService } from './core/services/firebase/quiz.service';
@@ -21,6 +29,7 @@ import { FirebaseVideoService } from './core/services/firebase/video.service';
 import { FirebaseActionService } from './core/services/firebase/action.service';
 import { FirebaseFocusService } from './core/services/firebase/focus.service';
 import { FirebaseCalendarService } from './core/services/firebase/calendar.service';
+import { FirebaseNewsService } from './core/services/firebase/news.service';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -29,11 +38,18 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(),
     Title,
     { provide: TitleStrategy, useClass: AppTitleStrategy },
+
+    // Firebase providers
+    provideFirebaseApp(() => initializeApp(environment.firebaseConfig)),
+    provideFirestore(() => getFirestore()),
+    provideStorage(() => getStorage()),
+    provideAuth(() => getAuth()),
     { provide: QUIZ_SERVICE, useClass: FirebaseQuizService },
     { provide: BLOG_SERVICE, useClass: FirebaseBlogService },
     { provide: VIDEO_SERVICE, useClass: FirebaseVideoService },
     { provide: ACTION_SERVICE, useClass: FirebaseActionService },
     { provide: FOCUS_SERVICE, useClass: FirebaseFocusService },
     { provide: CALENDAR_SERVICE, useClass: FirebaseCalendarService },
+    { provide: NEWS_SERVICE, useClass: FirebaseNewsService },
   ],
 };

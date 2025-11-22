@@ -3,7 +3,6 @@ import { NgFor } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { ElementCardComponent } from '../../shared/ui/element-card.component';
 import { VideoCardComponent, VideoCardModel } from '../../shared/ui/video-card.component';
-import { ElementBadgeComponent } from '../../shared/ui/element-badge.component';
 import { BreakingNewsComponent } from '../../shared/ui/breaking-news.component';
 import { WeeklyQuizTeaserComponent } from '../../shared/ui/weekly-quiz-teaser.component';
 import { EnvironmentCalendarTeaserComponent } from '../../shared/ui/environment-calendar-teaser.component';

@@ -1,4 +1,4 @@
-import { ApplicationConfig, importProvidersFrom } from '@angular/core';
+import { ApplicationConfig } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { provideRouter, TitleStrategy } from '@angular/router';
 import { routes } from './app.routes';

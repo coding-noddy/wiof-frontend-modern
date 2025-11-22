@@ -2,9 +2,8 @@ import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { NgFor, NgIf, NgClass } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { ElementBadgeComponent } from '../../shared/ui/element-badge.component';
-import { Quiz, QuizQuestion, QuizResult } from '../../shared/models/quiz.model';
+import { Quiz, QuizResult } from '../../shared/models/quiz.model';
 import { QUIZ_SERVICE } from '../../core/services/tokens';
-import { IQuizService } from '../../core/services/interfaces/quiz.service.interface';
 
 @Component({
   selector: 'app-quiz',

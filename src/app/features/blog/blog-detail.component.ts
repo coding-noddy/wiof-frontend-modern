@@ -6,7 +6,6 @@ import { BlogPost } from '../../shared/models/blog.model';
 import { Meta, Title } from '@angular/platform-browser';
 import { JsonLdService } from '../../shared/seo/json-ld.service';
 import { BLOG_SERVICE } from '../../core/services/tokens';
-import { IBlogService } from '../../core/services/interfaces/blog.service.interface';
 
 @Component({
   selector: 'app-blog-detail',

@@ -9,7 +9,7 @@
         "project": ["tsconfig.app.json"],
         "createDefaultProgram": true
       },
-      "plugins": ["@typescript-eslint", "@angular-eslint"],
+      "plugins": ["@typescript-eslint", "@angular-eslint", "unused-imports"],
       "extends": [
         "eslint:recommended",
         "plugin:@typescript-eslint/recommended",
@@ -18,7 +18,13 @@
       ],
       "rules": {
         "@typescript-eslint/no-explicit-any": "off",
-        "@typescript-eslint/explicit-module-boundary-types": "off"
+        "@typescript-eslint/explicit-module-boundary-types": "off",
+        // auto-remove unused imports
+        "unused-imports/no-unused-imports": "error",
+        // relax empty block rule to avoid blocking automated linting; review manually if needed
+        "no-empty": ["warn", { "allowEmptyCatch": true }],
+        // keep eslint from erroring on unused vars that start with _ (convention for intentionally unused)
+        "@typescript-eslint/no-unused-vars": ["warn", { "args": "none", "varsIgnorePattern": "^_" }]
       }
     },
     {

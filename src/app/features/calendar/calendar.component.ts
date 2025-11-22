@@ -2,7 +2,7 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { NgFor, NgIf, NgClass, TitleCasePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ElementBadgeComponent } from '../../shared/ui/element-badge.component';
-import { CalendarEvent, CalendarFilter } from '../../shared/models/calendar.model';
+import { CalendarEvent } from '../../shared/models/calendar.model';
 import { JsonLdService } from '../../shared/seo/json-ld.service';
 
 @Component({

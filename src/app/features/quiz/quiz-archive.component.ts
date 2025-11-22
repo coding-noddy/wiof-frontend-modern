@@ -3,7 +3,6 @@ import { NgFor, NgIf, TitleCasePipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { Quiz } from '../../shared/models/quiz.model';
 import { QUIZ_SERVICE } from '../../core/services/tokens';
-import { IQuizService } from '../../core/services/interfaces/quiz.service.interface';
 
 @Component({
   selector: 'app-quiz-archive',

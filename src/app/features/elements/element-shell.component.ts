@@ -1,7 +1,7 @@
 // element-shell.component.ts
 import { Component, computed, inject } from '@angular/core';
 import { ActivatedRoute, RouterLink, RouterOutlet } from '@angular/router';
-import { NgClass, NgIf } from '@angular/common';
+import { NgClass } from '@angular/common';
 
 @Component({
   standalone: true,

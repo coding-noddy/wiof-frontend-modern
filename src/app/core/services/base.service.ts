@@ -1,4 +1,4 @@
-import { Observable, of, delay, map } from 'rxjs';
+import { Observable, of, delay } from 'rxjs';
 import { environment } from '../../../environments/environment';
 
 export abstract class BaseService {

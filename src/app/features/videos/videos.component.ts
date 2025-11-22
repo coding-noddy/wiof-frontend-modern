@@ -3,7 +3,6 @@ import { NgFor, NgIf } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { VideoCardComponent } from '../../shared/ui/video-card.component';
 import { VIDEO_SERVICE } from '../../core/services/tokens';
-import { IVideoService } from '../../core/services/interfaces/video.service.interface';
 import { Video } from '../../shared/models/video.model';
 
 @Component({

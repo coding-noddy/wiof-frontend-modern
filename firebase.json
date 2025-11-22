@@ -1,6 +1,6 @@
 {
   "hosting": {
-    "public": "dist/wiof-frontend-modern",
+    "public": "dist/wiof-frontend-modern/browser",
     "ignore": ["firebase.json", ".firebaserc", "**/.*", "**/node_modules/**"],
     "rewrites": [
       {

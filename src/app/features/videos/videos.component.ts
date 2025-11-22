@@ -1,6 +1,5 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { NgFor, NgIf } from '@angular/common';
-import { RouterLink } from '@angular/router';
 import { VideoCardComponent } from '../../shared/ui/video-card.component';
 import { VIDEO_SERVICE } from '../../core/services/tokens';
 import { Video } from '../../shared/models/video.model';
@@ -8,7 +7,7 @@ import { Video } from '../../shared/models/video.model';
 @Component({
   selector: 'app-videos',
   standalone: true,
-  imports: [NgFor, NgIf, RouterLink, VideoCardComponent],
+  imports: [NgFor, NgIf, VideoCardComponent],
   template: `
     <section class="section">
       <div class="container">
@@ -51,8 +50,8 @@ import { Video } from '../../shared/models/video.model';
 
             <!-- Load more -->
             <div *ngIf="hasMoreVideos()" class="text-center mt-8">
-              <button 
-                class="button button-primary" 
+              <button
+                class="button button-primary"
                 [disabled]="loadingMore()"
                 (click)="loadMore()"
               >
@@ -67,7 +66,7 @@ import { Video } from '../../shared/models/video.model';
 })
 export class VideosComponent implements OnInit {
   private videoService = inject(VIDEO_SERVICE);
-  
+
   loading = signal(true);
   loadingMore = signal(false);
   videos = signal<Video[]>([]);
@@ -80,7 +79,7 @@ export class VideosComponent implements OnInit {
     // Load featured videos (limit to 2)
     this.videoService.getFeaturedVideos(2).subscribe(featured => {
       this.featuredVideos.set(featured);
-      
+
       // Then load all videos
       this.loadVideos();
     });

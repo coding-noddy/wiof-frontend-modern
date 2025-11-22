@@ -1,0 +1,13 @@
+{
+  "hosting": {
+    "public": "dist/wiof-frontend-modern",
+    "ignore": ["firebase.json", ".firebaserc", "**/.*", "**/node_modules/**"],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ],
+    "cleanUrls": true
+  }
+}

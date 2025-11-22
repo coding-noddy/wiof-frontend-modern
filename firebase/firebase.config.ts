@@ -16,15 +16,21 @@ interface FirebaseConfig {
 /**
  * Staging environment configuration
  */
+/**
+ * NOTE: This file intentionally contains ONLY the staging Firebase configuration.
+ * Production configuration has been removed from the repository to prevent
+ * accidental production deployments. To deploy to production, inject production
+ * credentials from a secure secret manager in CI and do NOT commit them to the repo.
+ */
 export const firebaseConfig: FirebaseConfig = {
-  apiKey: "AIzaSyBru9kG2e19cnaeRwnGIp0zT9Op1DOcvWM",
-  authDomain: "wiof-staging.firebaseapp.com",
-  databaseURL: "https://wiof-staging.firebaseio.com",
-  projectId: "wiof-staging",
-  storageBucket: "wiof-staging.appspot.com",
-  messagingSenderId: "123456789012",
-  appId: "1:123456789012:web:abc123def456",
-  measurementId: "G-ABC123DEF4"
+  apiKey: "AIzaSyCOobQBJglpbTsngWfJg2vktAKLrzH__MA",
+  authDomain: "wiof-modern-staging.firebaseapp.com",
+  databaseURL: "https://wiof-modern-staging.firebaseio.com",
+  projectId: "wiof-modern-staging",
+  storageBucket: "wiof-modern-staging.firebasestorage.app",
+  messagingSenderId: "725094157992",
+  appId: "1:725094157992:web:914d93b2b590c4f4c6bc9d",
+  measurementId: "G-15RSEBTQ3P"
 };
 
 /**

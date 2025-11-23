@@ -1,4 +1,7 @@
 {
+  "firestore": {
+    "rules": "firebase/rules/firestore.rules"
+  },
   "hosting": {
     "public": "dist/wiof-frontend-modern/browser",
     "ignore": ["firebase.json", ".firebaserc", "**/.*", "**/node_modules/**"],

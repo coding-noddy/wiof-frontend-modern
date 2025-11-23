@@ -17,7 +17,7 @@ export class AdminGuard {
   async isAdmin(): Promise<boolean> {
     const uid = this.auth.getCurrentUserUid();
     console.log(`🔍 Checking admin status for UID: ${uid}`);
-    
+
     if (!uid) {
       console.error('❌ No UID found in auth service');
       return false;
@@ -26,9 +26,9 @@ export class AdminGuard {
     try {
       const adminDocRef = doc(this.firestore, 'admins', uid);
       console.log(`📍 Looking for document at: admins/${uid}`);
-      
+
       const adminDoc = await getDoc(adminDocRef);
-      
+
       if (adminDoc.exists()) {
         console.log('✅ Admin document found:', adminDoc.data());
         return true;

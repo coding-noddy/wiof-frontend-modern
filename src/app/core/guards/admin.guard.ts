@@ -16,14 +16,28 @@ export class AdminGuard {
    */
   async isAdmin(): Promise<boolean> {
     const uid = this.auth.getCurrentUserUid();
-    if (!uid) return false;
+    console.log(`🔍 Checking admin status for UID: ${uid}`);
+    
+    if (!uid) {
+      console.error('❌ No UID found in auth service');
+      return false;
+    }
 
     try {
       const adminDocRef = doc(this.firestore, 'admins', uid);
+      console.log(`📍 Looking for document at: admins/${uid}`);
+      
       const adminDoc = await getDoc(adminDocRef);
-      return adminDoc.exists();
+      
+      if (adminDoc.exists()) {
+        console.log('✅ Admin document found:', adminDoc.data());
+        return true;
+      } else {
+        console.warn('⚠️ Admin document does NOT exist for UID:', uid);
+        return false;
+      }
     } catch (error) {
-      console.error('Error checking admin status:', error);
+      console.error('❌ Error checking admin status:', error);
       return false;
     }
   }

@@ -129,8 +129,19 @@ export class AdminSignInComponent {
       const user = await this.auth.signInWithGoogle();
       console.log('✅ Signed in successfully. User:', user?.email, 'UID:', user?.uid);
 
-      // Check if user is admin
-      const isAdmin = await this.adminGuard.isAdmin();
+      // Check if user is admin (with retry for eventual consistency)
+      let isAdmin = false;
+      for (let attempt = 0; attempt < 3; attempt++) {
+        isAdmin = await this.adminGuard.isAdmin();
+        if (isAdmin) {
+          console.log(`✅ Admin status confirmed on attempt ${attempt + 1}`);
+          break;
+        }
+        if (attempt < 2) {
+          console.log(`⏳ Admin status not yet visible, retrying in 1s... (attempt ${attempt + 1}/3)`);
+          await new Promise(resolve => setTimeout(resolve, 1000));
+        }
+      }
 
       if (isAdmin) {
         console.log('✅ User is authorized admin. Redirecting to dashboard...');

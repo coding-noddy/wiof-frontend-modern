@@ -16,6 +16,11 @@ export const adminRoutes: Routes = [
     canActivate: [adminGuard],
     children: [
       {
+        path: '',
+        redirectTo: 'blog',
+        pathMatch: 'full'
+      },
+      {
         path: 'blog',
         children: [
           {

@@ -36,8 +36,8 @@ export const adminGuard: CanActivateFn = async (route, state) => {
 
   // Check if user is authenticated
   if (!auth.isAuthenticated()) {
-    console.warn('User not authenticated, redirecting to home');
-    return router.createUrlTree(['/']);
+    console.warn('User not authenticated, redirecting to admin signin');
+    return router.createUrlTree(['/admin/signin']);
   }
 
   // Check if user is admin

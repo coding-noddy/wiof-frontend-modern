@@ -2,6 +2,8 @@ import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { AdminBlogService } from '../../core/services/admin-blog.service';
+import { Firestore, collection, getDocs } from '@angular/fire/firestore';
+import { COLLECTIONS } from '../../shared/models/firebase.constants';
 
 @Component({
   selector: 'app-admin-blog-list',
@@ -199,6 +201,7 @@ import { AdminBlogService } from '../../core/services/admin-blog.service';
 })
 export class AdminBlogListComponent implements OnInit {
   private adminBlogService = inject(AdminBlogService);
+  private firestore = inject(Firestore);
 
   blogs: any[] = [];
   isLoading = true;
@@ -209,8 +212,33 @@ export class AdminBlogListComponent implements OnInit {
   }
 
   private async loadBlogs() {
-    // Placeholder: In future, implement fetching list of blogs from service
-    this.isLoading = false;
+    try {
+      this.isLoading = true;
+      this.error = null;
+
+      // Fetch all blogs from Firestore
+      const blogsRef = collection(this.firestore, COLLECTIONS.BLOGS);
+      const snapshot = await getDocs(blogsRef);
+
+      // Convert Firestore documents to blog objects with IDs
+      this.blogs = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+
+      // Sort by createdAt descending (newest first)
+      this.blogs.sort((a, b) => {
+        const dateA = a.createdAt?.toDate?.() || new Date(0);
+        const dateB = b.createdAt?.toDate?.() || new Date(0);
+        return dateB.getTime() - dateA.getTime();
+      });
+    } catch (error: any) {
+      this.error = error?.message || 'Failed to load blog posts. Please try again.';
+      console.error('Load blogs error:', error);
+      this.blogs = [];
+    } finally {
+      this.isLoading = false;
+    }
   }
 
   async onDelete(blogId: string) {

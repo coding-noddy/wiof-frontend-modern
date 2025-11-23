@@ -6,7 +6,6 @@ import { IQuizService } from '../interfaces/quiz.service.interface';
 import { Quiz, QuizQuestion, QuizResult } from '../../../shared/models/quiz.model';
 
 const ELEMENT_TYPES = ['earth', 'water', 'fire', 'air', 'space'] as const;
-type ElementType = typeof ELEMENT_TYPES[number];
 
 // Mock Data
 const BASE_QUIZ: Quiz = {

@@ -3,14 +3,14 @@ import { ActivatedRoute } from '@angular/router';
 import { NgFor, NgClass } from '@angular/common';
 import { ElementBadgeComponent } from '../../shared/ui/element-badge.component';
 
-interface ElementWidget {
-  id: string;
-  title: string;
-  description: string;
-  type: 'calculator' | 'tracker' | 'monitor' | 'quiz';
-  icon: string;
-  status: 'active' | 'coming-soon';
-}
+// interface ElementWidget { // unused — remove to satisfy linter
+//   id: string;
+//   title: string;
+//   description: string;
+//   type: 'calculator' | 'tracker' | 'monitor' | 'quiz';
+//   icon: string;
+//   status: 'active' | 'coming-soon';
+// }
 
 @Component({
   standalone: true,
@@ -23,7 +23,7 @@ interface ElementWidget {
       </div>
 
       <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        <div *ngFor="let widget of elementWidgets()" 
+        <div *ngFor="let widget of elementWidgets()"
              class="card p-6 hover:shadow-lg transition cursor-pointer"
              [class.opacity-60]="widget.status === 'coming-soon'"
              (click)="openWidget(widget.id)">
@@ -31,12 +31,12 @@ interface ElementWidget {
             <div class="text-3xl">{{ widget.icon }}</div>
             <app-element-badge [element]="elementTyped()" />
           </div>
-          
+
           <h3 class="font-semibold text-lg mb-2">{{ widget.title }}</h3>
           <p class="text-slate-600 text-sm mb-4">{{ widget.description }}</p>
-          
+
           <div class="flex items-center justify-between">
-            <span class="text-xs px-2 py-1 rounded-full" 
+            <span class="text-xs px-2 py-1 rounded-full"
                   [ngClass]="{
                     'bg-green-100 text-green-700': widget.status === 'active',
                     'bg-slate-100 text-slate-600': widget.status === 'coming-soon'
@@ -63,23 +63,23 @@ interface ElementWidget {
 })
 export class ElementWidgetsComponent {
   route = inject(ActivatedRoute);
-  
+
   element = computed(() => this.route.parent?.snapshot.paramMap.get('element') || 'earth');
   elementName = computed(() => this.element().charAt(0).toUpperCase() + this.element().slice(1));
-  
+
   elementTyped = computed(() => this.element() as 'earth' | 'water' | 'fire' | 'air' | 'space');
-  
+
   elementGradientBg() {
     const e = this.element();
     return {
       'from-earth to-earth/80': e === 'earth',
       'from-water to-water/80': e === 'water',
       'from-fire to-fire/80': e === 'fire',
-      'from-air to-air/80': e === 'air', 
+      'from-air to-air/80': e === 'air',
       'from-space to-space/80': e === 'space'
     };
   }
-  
+
   elementWidgets() {
     const widgetsByElement = {
       earth: [
@@ -110,7 +110,7 @@ export class ElementWidgetsComponent {
     };
     return widgetsByElement[this.element() as keyof typeof widgetsByElement] || [];
   }
-  
+
   featuredWidget() {
     const featured = {
       earth: { title: 'Carbon Footprint Calculator', description: 'Get a comprehensive analysis of your environmental impact' },
@@ -121,7 +121,7 @@ export class ElementWidgetsComponent {
     };
     return featured[this.element() as keyof typeof featured];
   }
-  
+
   openWidget(widgetId: string) {
     console.log('Opening widget:', widgetId);
   }

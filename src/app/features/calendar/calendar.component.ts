@@ -22,7 +22,7 @@ import { JsonLdService } from '../../shared/seo/json-ld.service';
           <div class="flex flex-wrap items-center justify-between gap-4 mb-4">
             <!-- View Toggle -->
             <div class="flex rounded-xl border border-slate-300 overflow-hidden">
-              <button 
+              <button
                 (click)="setViewMode('calendar')"
                 class="px-4 py-2 text-sm font-medium transition"
                 [ngClass]="{
@@ -31,7 +31,7 @@ import { JsonLdService } from '../../shared/seo/json-ld.service';
                 }">
                 Calendar View
               </button>
-              <button 
+              <button
                 (click)="setViewMode('list')"
                 class="px-4 py-2 text-sm font-medium transition"
                 [ngClass]="{
@@ -43,7 +43,7 @@ import { JsonLdService } from '../../shared/seo/json-ld.service';
             </div>
 
             <!-- Export Button -->
-            <button 
+            <button
               (click)="exportCalendar()"
               class="px-4 py-2 rounded-xl border border-slate-300 hover:bg-slate-50 text-sm font-medium transition"
             >
@@ -65,7 +65,7 @@ import { JsonLdService } from '../../shared/seo/json-ld.service';
               <option value="air">Air</option>
               <option value="space">Space</option>
             </select>
-            
+
             <select
               [(ngModel)]="selectedType"
               (change)="updateFilters()"
@@ -98,13 +98,13 @@ import { JsonLdService } from '../../shared/seo/json-ld.service';
           <div class="flex items-center justify-between mb-6">
             <h2 class="text-xl font-bold">{{ currentMonthName() }} {{ currentYear() }}</h2>
             <div class="flex gap-2">
-              <button 
+              <button
                 (click)="previousMonth()"
                 class="p-2 rounded-xl border border-slate-300 hover:bg-slate-50 transition"
               >
                 ←
               </button>
-              <button 
+              <button
                 (click)="nextMonth()"
                 class="p-2 rounded-xl border border-slate-300 hover:bg-slate-50 transition"
               >
@@ -119,9 +119,9 @@ import { JsonLdService } from '../../shared/seo/json-ld.service';
               {{ day }}
             </div>
           </div>
-          
+
           <div class="grid grid-cols-7 gap-1">
-            <div *ngFor="let day of calendarDays()" 
+            <div *ngFor="let day of calendarDays()"
                  class="min-h-[100px] p-2 border border-slate-100 rounded-lg"
                  [ngClass]="{
                    'bg-slate-50': !day.isCurrentMonth,
@@ -135,7 +135,7 @@ import { JsonLdService } from '../../shared/seo/json-ld.service';
                 {{ day.number }}
               </div>
               <div class="space-y-1">
-                <div *ngFor="let event of day.events" 
+                <div *ngFor="let event of day.events"
                      class="text-xs p-1 rounded truncate cursor-pointer hover:shadow-sm transition"
                      [ngClass]="getEventColorClass(event.element)"
                      [title]="event.title + ' at ' + event.time">
@@ -154,7 +154,7 @@ import { JsonLdService } from '../../shared/seo/json-ld.service';
                 <div class="text-2xl font-bold text-water">{{ getEventDay(event.date) }}</div>
                 <div class="text-sm text-slate-500">{{ getEventMonth(event.date) }}</div>
               </div>
-              
+
               <div class="flex-1">
                 <div class="flex items-center gap-3 mb-2">
                   <app-element-badge [element]="event.element" />
@@ -166,10 +166,10 @@ import { JsonLdService } from '../../shared/seo/json-ld.service';
                     Online
                   </span>
                 </div>
-                
+
                 <h3 class="font-semibold text-lg mb-2">{{ event.title }}</h3>
                 <p class="text-slate-600 mb-3">{{ event.description }}</p>
-                
+
                 <div class="grid sm:grid-cols-2 gap-4 text-sm">
                   <div class="flex items-center gap-2">
                     <span class="text-slate-500">📅</span>
@@ -189,9 +189,9 @@ import { JsonLdService } from '../../shared/seo/json-ld.service';
                   </div>
                 </div>
               </div>
-              
+
               <div class="flex-shrink-0">
-                <button 
+                <button
                   *ngIf="event.registrationUrl"
                   class="px-4 py-2 rounded-xl bg-water text-white text-sm font-medium hover:bg-water/90 transition"
                 >
@@ -318,15 +318,15 @@ export class CalendarComponent {
 
   filteredEvents = computed(() => {
     let events = this.allEvents();
-    
+
     if (this.selectedElement) {
       events = events.filter(event => event.element === this.selectedElement);
     }
-    
+
     if (this.selectedType) {
       events = events.filter(event => event.type === this.selectedType);
     }
-    
+
     if (this.selectedMonth) {
       const month = parseInt(this.selectedMonth);
       events = events.filter(event => {
@@ -334,7 +334,7 @@ export class CalendarComponent {
         return eventDate.getMonth() + 1 === month;
       });
     }
-    
+
     return events.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
   });
 
@@ -342,22 +342,22 @@ export class CalendarComponent {
     const year = this.currentYear();
     const month = this.currentMonth();
     const firstDay = new Date(year, month - 1, 1);
-    const lastDay = new Date(year, month, 0);
+  // const lastDay = new Date(year, month, 0); // not used; kept calculation minimal
     const startDate = new Date(firstDay);
     startDate.setDate(startDate.getDate() - firstDay.getDay());
-    
+
     const days = [];
     const today = new Date();
-    
+
     for (let i = 0; i < 42; i++) {
       const date = new Date(startDate);
       date.setDate(startDate.getDate() + i);
-      
+
       const dayEvents = this.filteredEvents().filter(event => {
         const eventDate = new Date(event.date);
         return eventDate.toDateString() === date.toDateString();
       });
-      
+
       days.push({
         number: date.getDate(),
         isCurrentMonth: date.getMonth() === month - 1,
@@ -365,7 +365,7 @@ export class CalendarComponent {
         events: dayEvents
       });
     }
-    
+
     return days;
   });
 
@@ -412,13 +412,13 @@ export class CalendarComponent {
 
   generateICS(events: CalendarEvent[]): string {
     let ics = 'BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//WIOF//Environmental Calendar//EN\n';
-    
+
     events.forEach(event => {
       const startDate = new Date(event.date + 'T' + this.convertTo24Hour(event.time));
-      const endDate = event.endTime ? 
+      const endDate = event.endTime ?
         new Date(event.date + 'T' + this.convertTo24Hour(event.endTime)) :
         new Date(startDate.getTime() + 60 * 60 * 1000);
-      
+
       ics += 'BEGIN:VEVENT\n';
       ics += `UID:${event.id}@wiof.org\n`;
       ics += `DTSTART:${this.formatICSDate(startDate)}\n`;
@@ -428,21 +428,23 @@ export class CalendarComponent {
       ics += `LOCATION:${event.location}\n`;
       ics += 'END:VEVENT\n';
     });
-    
+
     ics += 'END:VCALENDAR';
     return ics;
   }
 
   convertTo24Hour(time: string): string {
-    const [timePart, period] = time.split(' ');
-    let [hours, minutes] = timePart.split(':');
-    
+  const [timePart, period] = time.split(' ');
+  const parts = timePart.split(':');
+  let hours = parts[0];
+  const minutes = parts[1];
+
     if (period === 'PM' && hours !== '12') {
       hours = (parseInt(hours) + 12).toString();
     } else if (period === 'AM' && hours === '12') {
       hours = '00';
     }
-    
+
     return `${hours.padStart(2, '0')}:${minutes}:00`;
   }
 
@@ -506,11 +508,11 @@ export class CalendarComponent {
 
   formatEventDate(dateString: string): string {
     const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', { 
+    return date.toLocaleDateString('en-US', {
       weekday: 'long',
-      year: 'numeric', 
-      month: 'long', 
-      day: 'numeric' 
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
     });
   }
 }

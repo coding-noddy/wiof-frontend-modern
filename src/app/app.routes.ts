@@ -1,6 +1,19 @@
 ﻿import { Routes } from '@angular/router';
+import { environment } from '../environments/environment';
 
 export const routes: Routes = [
+  // Admin routes (only enabled when environment.enableAdmin is true)
+  ...(environment.enableAdmin
+    ? [
+        {
+          path: 'admin',
+          title: 'Admin Dashboard',
+          loadChildren: () =>
+            import('./features/admin/admin.routes').then((m) => m.adminRoutes),
+        },
+      ]
+    : []),
+
   {
     path: '',
     title: 'Home',

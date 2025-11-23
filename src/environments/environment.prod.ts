@@ -5,5 +5,6 @@ export const environment = {
   youtube_api_key: "AIzaSyBTfpeDChRfmYSgBevDVHcCEdkiPDNqdBs",
   aqi_api_key: "655a2796ba9301e9aa31a2119528c6dfaa383f53",
   mockBackend: false,
-  firebaseConfig: firebaseConfig  // Using staging config for all environments
+  firebaseConfig: firebaseConfig,  // Using staging config for all environments
+  enableAdmin: false  // Admin panel disabled in production
 };

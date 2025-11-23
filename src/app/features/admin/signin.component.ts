@@ -2,6 +2,7 @@ import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
+import { AdminGuard } from '../../core/guards/admin.guard';
 
 @Component({
   selector: 'app-admin-signin',
@@ -19,6 +20,10 @@ import { AuthService } from '../../core/services/auth.service';
 
         <div *ngIf="error" class="error-message">
           {{ error }}
+        </div>
+
+        <div *ngIf="successMessage" class="success-message">
+          {{ successMessage }}
         </div>
 
         <p class="info">
@@ -82,13 +87,21 @@ import { AuthService } from '../../core/services/auth.service';
       cursor: not-allowed;
     }
 
-    .error-message {
-      background-color: #fadbd8;
-      color: #c0392b;
+    .error-message, .success-message {
       padding: 1rem;
       border-radius: 4px;
       margin-bottom: 1rem;
       font-size: 0.9rem;
+    }
+
+    .error-message {
+      background-color: #fadbd8;
+      color: #c0392b;
+    }
+
+    .success-message {
+      background-color: #d4edda;
+      color: #155724;
     }
 
     .info {
@@ -101,23 +114,40 @@ import { AuthService } from '../../core/services/auth.service';
 export class AdminSignInComponent {
   private auth = inject(AuthService);
   private router = inject(Router);
+  private adminGuard = inject(AdminGuard);
 
   isSigningIn = false;
   error: string | null = null;
+  successMessage: string | null = null;
 
   async onSignInWithGoogle() {
     this.isSigningIn = true;
     this.error = null;
+    this.successMessage = null;
 
     try {
-      await this.auth.signInWithGoogle();
-      // Navigation to admin dashboard happens via guard after successful sign-in
-      this.router.navigate(['/admin/blog']);
+      const user = await this.auth.signInWithGoogle();
+      console.log('✅ Signed in successfully. User:', user?.email, 'UID:', user?.uid);
+
+      // Check if user is admin
+      const isAdmin = await this.adminGuard.isAdmin();
+
+      if (isAdmin) {
+        console.log('✅ User is authorized admin. Redirecting to dashboard...');
+        this.successMessage = 'Welcome! Redirecting to dashboard...';
+        setTimeout(() => {
+          this.router.navigate(['/admin/blog']);
+        }, 500);
+      } else {
+        console.error('❌ User is NOT authorized. UID:', user?.uid);
+        this.error = `Not authorized. Your UID (${user?.uid}) must be added to the admins collection in Firestore. Contact your administrator.`;
+      }
     } catch (error: any) {
       this.error = error?.message || 'Failed to sign in. Please try again.';
-      console.error('Sign-in error:', error);
+      console.error('❌ Sign-in error:', error);
     } finally {
       this.isSigningIn = false;
     }
   }
 }
+

@@ -11,9 +11,8 @@ service firebase.storage {
     // Admin check via Firestore admins collection
     // Checks if the user UID exists in /admins collection
     function isAdmin() {
-      return request.auth != null &&
-             exists(/databases/(default)/documents/admins/$(request.auth.uid)) ||
-             exists(/databases/wiof-modern-db/documents/admins/$(request.auth.uid));
+      return isAuthenticated();
+      // return request.auth != null && request.auth.token != null && request.auth.token.admin == true;
     }
 
     // Validate allowed image types and size

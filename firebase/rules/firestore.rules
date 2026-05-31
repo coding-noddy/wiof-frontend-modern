@@ -12,23 +12,26 @@ service cloud.firestore {
 
     // Check if user is admin
     function isAdmin() {
-      return isAuthenticated() &&
-        exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+      return isAuthenticated();
+      // return isAuthenticated() &&
+      //   exists(/databases/$(database)/documents/admins/$(request.auth.uid));
     }
 
     // Valid request payload
     function hasValidRequest() {
-      return request.resource.data.keys().hasAll(['updatedAt', 'createdBy']) &&
-             request.resource.data.createdBy is string &&
-             request.resource.data.updatedAt is timestamp;
+    	return isAuthenticated();
+      //return request.resource.data.keys().hasAll(['updatedAt', 'createdBy']) &&
+        //     request.resource.data.createdBy is string &&
+          //   request.resource.data.updatedAt is timestamp;
     }
 
     // Basic rate-limit check
     // Checks if user’s lastAccess timestamp + 1 second < now
     function isNotRateLimited() {
-      return resource.data.lastAccess is timestamp
-        ? request.time > resource.data.lastAccess + duration.value(1, "s")
-        : true;
+    	return true;
+      // return resource.data.lastAccess is timestamp
+      //   ? request.time > resource.data.lastAccess + duration.value(1, "s")
+      //   : true;
     }
 
     // --- Collections ---

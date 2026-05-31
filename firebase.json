@@ -1,9 +1,11 @@
 {
   "firestore": {
-    "rules": "firebase/rules/firestore.rules"
+    "rules": "firebase/rules/firestore.rules",
+    "database": "wiof-modern-db"
   },
   "storage": {
-    "rules": "firebase/rules/storage.rules"
+    "rules": "firebase/rules/storage.rules",
+    "database": "wiof-modern-db"
   },
   "hosting": {
     "public": "dist/wiof-frontend-modern/browser",

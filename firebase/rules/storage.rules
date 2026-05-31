@@ -1,26 +1,34 @@
 rules_version = '2';
+
 service firebase.storage {
   match /b/{bucket}/o {
-    // Common functions
+
+    // Check if the user is logged in
     function isAuthenticated() {
       return request.auth != null;
     }
 
+    // Admin check via Firestore admins collection
+    // Checks if the user UID exists in /admins collection
     function isAdmin() {
-      return isAuthenticated() &&
-        exists(/databases/(default)/documents/admins/$(request.auth.uid));
+      return request.auth != null &&
+             exists(/databases/(default)/documents/admins/$(request.auth.uid)) ||
+             exists(/databases/wiof-modern-db/documents/admins/$(request.auth.uid));
     }
 
+    // Validate allowed image types and size
     function isValidImage() {
-      return request.resource.contentType.matches('image/.*') &&
-             request.resource.size < 5 * 1024 * 1024 && // 5MB max
-             request.resource.contentType.matches('image/(jpeg|png|gif|webp)');
+      return request.resource.size < 5 * 1024 * 1024  // < 5 MB
+          && request.resource.contentType.matches('image/.*');
     }
 
+    // Validate allowed document types and size
     function isValidDocument() {
-      return request.resource.size < 10 * 1024 * 1024 && // 10MB max
-             request.resource.contentType.matches('application/(pdf|msword|vnd.openxmlformats-officedocument.wordprocessingml.document)');
+      return request.resource.size < 10 * 1024 * 1024  // < 10 MB
+          && request.resource.contentType.matches('application/(pdf|msword|vnd.openxmlformats-officedocument.wordprocessingml.document)');
     }
+
+    // ---------- COLLECTION RULES BELOW -------------
 
     // News images
     match /news-images/{imageId} {
@@ -52,7 +60,7 @@ service firebase.storage {
       allow write: if isAuthenticated() && (request.auth.uid == userId || isAdmin());
     }
 
-    // Default deny all
+    // Default rule - deny all unspecified paths
     match /{allPaths=**} {
       allow read, write: if false;
     }

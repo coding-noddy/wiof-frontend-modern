@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { Auth, signInWithPopup, GoogleAuthProvider, signOut, user } from '@angular/fire/auth';
+import { Auth, signInWithPopup, GoogleAuthProvider, signInWithEmailAndPassword, signOut, user } from '@angular/fire/auth';
 import { toSignal } from '@angular/core/rxjs-interop';
 
 @Injectable({
@@ -23,6 +23,16 @@ export class AuthService {
       return result.user;
     } catch (error) {
       console.error('Google sign-in failed:', error);
+      throw error;
+    }
+  }
+
+  async signInWithEmailPassword(email: string, password: string) {
+    try {
+      const result = await signInWithEmailAndPassword(this.auth, email, password);
+      return result.user;
+    } catch (error) {
+      console.error('Email/password sign-in failed:', error);
       throw error;
     }
   }

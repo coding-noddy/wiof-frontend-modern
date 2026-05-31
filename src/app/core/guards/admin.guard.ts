@@ -1,6 +1,7 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable, Injector, inject, runInInjectionContext } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
-import { Firestore, doc, getDoc } from '@angular/fire/firestore';
+import { Firestore, doc } from '@angular/fire/firestore';
+import { getDocFromServer } from 'firebase/firestore';
 import { AuthService } from '../services/auth.service';
 
 @Injectable({
@@ -10,24 +11,25 @@ export class AdminGuard {
   private auth = inject(AuthService);
   private firestore = inject(Firestore);
   private router = inject(Router);
+  private injector = inject(Injector);
 
   /**
    * Check if the current user is an admin by checking the `admins` collection
    */
-  async isAdmin(): Promise<boolean> {
-    const uid = this.auth.getCurrentUserUid();
-    console.log(`🔍 Checking admin status for UID: ${uid}`);
+  async isAdmin(uid?: string): Promise<boolean> {
+    const effectiveUid = uid || this.auth.getCurrentUserUid();
+    console.log(`🔍 Checking admin status for UID: ${effectiveUid}`);
 
-    if (!uid) {
-      console.error('❌ No UID found in auth service');
+    if (!effectiveUid) {
+      console.error('❌ No UID provided or found in auth service');
       return false;
     }
 
     try {
-      const adminDocRef = doc(this.firestore, 'admins', uid);
-      console.log(`📍 Looking for document at: admins/${uid}`);
+      const adminDocRef = doc(this.firestore, 'admins', effectiveUid);
+      console.log(`📍 Looking for document at: admins/${effectiveUid}`);
 
-      const adminDoc = await getDoc(adminDocRef);
+      const adminDoc = await runInInjectionContext(this.injector, () => getDocFromServer(adminDocRef));
 
       if (adminDoc.exists()) {
         console.log('✅ Admin document found:', adminDoc.data());

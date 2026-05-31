@@ -7,7 +7,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { AppTitleStrategy } from './shared/seo/app-title.strategy';
 
 // Firebase imports
-import { provideFirebaseApp, initializeApp } from '@angular/fire/app';
+import { provideFirebaseApp, initializeApp, getApp } from '@angular/fire/app';
 import { getFirestore, provideFirestore } from '@angular/fire/firestore';
 import { getStorage, provideStorage } from '@angular/fire/storage';
 import { getAuth, provideAuth } from '@angular/fire/auth';
@@ -41,7 +41,7 @@ export const appConfig: ApplicationConfig = {
 
     // Firebase providers
     provideFirebaseApp(() => initializeApp(environment.firebaseConfig)),
-    provideFirestore(() => getFirestore()),
+    provideFirestore(() => getFirestore(getApp(), 'wiof-modern-db')),
     provideStorage(() => getStorage()),
     provideAuth(() => getAuth()),
     { provide: QUIZ_SERVICE, useClass: FirebaseQuizService },

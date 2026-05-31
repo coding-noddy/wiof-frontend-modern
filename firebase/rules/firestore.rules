@@ -2,81 +2,96 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Common functions
+
+    // --- Common helper functions ----
+
+    // Check if user is logged in
     function isAuthenticated() {
       return request.auth != null;
     }
 
+    // Check if user is admin
     function isAdmin() {
       return isAuthenticated() &&
         exists(/databases/$(database)/documents/admins/$(request.auth.uid));
     }
 
-    function isNotRateLimited() {
-      return request.time > resource.data.lastAccess.toTime() + duration.value(1, 's') ||
-             !exists(/databases/$(database)/documents/users/$(request.auth.uid));
-    }
-
+    // Valid request payload
     function hasValidRequest() {
       return request.resource.data.keys().hasAll(['updatedAt', 'createdBy']) &&
              request.resource.data.createdBy is string &&
              request.resource.data.updatedAt is timestamp;
     }
 
-    // Blog collection rules
+    // Basic rate-limit check
+    // Checks if user’s lastAccess timestamp + 1 second < now
+    function isNotRateLimited() {
+      return resource.data.lastAccess is timestamp
+        ? request.time > resource.data.lastAccess + duration.value(1, "s")
+        : true;
+    }
+
+    // --- Collections ---
+
+    // Blogs
     match /blogs/{document=**} {
-      allow read: if true;  // Public read access
+      allow read: if true;
       allow write: if isAdmin() && hasValidRequest() && isNotRateLimited();
     }
 
-    // News collection rules
+    // News
     match /news/{document=**} {
-      allow read: if true;  // Public read access
+      allow read: if true;
       allow write: if isAdmin() && hasValidRequest() && isNotRateLimited();
     }
 
-    // Videos collection rules
+    // Videos
     match /videos/{document=**} {
-      allow read: if true;  // Public read access
-      allow write: if isAdmin();  // Only admins can write
+      allow read: if true;
+      allow write: if isAdmin();
     }
 
-    // Focus items collection rules
+    // Focus items
     match /focus/{document=**} {
-      allow read: if true;  // Public read access
-      allow write: if isAdmin();  // Only admins can write
+      allow read: if true;
+      allow write: if isAdmin();
     }
 
-    // Quiz collection rules
+    // Quizzes
     match /quizzes/{document=**} {
-      allow read: if true;  // Public read access
-      allow write: if isAdmin();  // Only admins can write
+      allow read: if true;
+      allow write: if isAdmin();
     }
 
-    // Actions collection rules
+    // Actions
     match /actions/{document=**} {
-      allow read: if true;  // Public read access
-      allow write: if isAdmin();  // Only admins can write
+      allow read: if true;
+      allow write: if isAdmin();
     }
 
-    // Calendar events collection rules
+    // Calendar events
     match /calendar/{document=**} {
-      allow read: if true;  // Public read access
-      allow write: if isAdmin();  // Only admins can write
+      allow read: if true;
+      allow write: if isAdmin();
     }
 
-    // User profiles collection rules
+    // User Profiles
     match /users/{userId} {
       allow read: if true;
-      allow create: if isAuthenticated() && request.auth.uid == userId;
-      allow update: if isAuthenticated() && (request.auth.uid == userId || isAdmin());
+
+      allow create: if isAuthenticated() &&
+                     request.auth.uid == userId;
+
+      allow update: if isAuthenticated() &&
+                     (request.auth.uid == userId || isAdmin());
+
       allow delete: if isAdmin();
     }
 
-    // Admin collection rules
+    // Admins collection
     match /admins/{userId} {
-      allow read: if request.auth.uid == userId;  // Admins can read their own admin doc
-      allow write: if isAdmin();  // Only admins can write to admins collection
+      allow read: if request.auth != null && request.auth.uid == userId;
+      allow write: if isAdmin();
     }
   }
 }
